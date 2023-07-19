@@ -3,7 +3,6 @@ package ru.practicum.server;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.model.HitDto;
 import ru.practicum.model.Stat;
 import ru.practicum.model.StatDtoOut;
@@ -25,6 +24,18 @@ public class StatService {
     }
 
     public List<StatDtoOut> getStats(LocalDateTime start,LocalDateTime end,String[] uri, boolean unique) {
-        throw new UnsupportedOperationException("метод не закончен");
+       if (uri == null || uri.length == 0) {
+           if (unique) {
+               return repository.getStatsUniqWithoutUri(start,end);
+           } else {
+               return repository.getStatsNoUniqWithoutUri(start,end);
+           }
+       } else {
+           if (unique) {
+               return repository.getStatsUniqWithUri(uri,start,end);
+           } else {
+               return repository.getStatsNoUniqWithUri(uri,start,end);
+           }
+       }
     }
 }
