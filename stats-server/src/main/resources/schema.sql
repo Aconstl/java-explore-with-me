@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS PUBLIC.STATISTIC
     app VARCHAR(63) NOT NULL,
     uri VARCHAR(63) NOT NULL,
     ip VARCHAR(63),
-    timestamp TIMESTAMP(63),
+    timestamp TIMESTAMP,
     CONSTRAINT pk_stat PRIMARY KEY (stat_id)
 );
 

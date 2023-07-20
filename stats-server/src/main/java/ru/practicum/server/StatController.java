@@ -29,17 +29,17 @@ public class StatController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/status")
+    @GetMapping("/stats")
     public List<StatDtoOut> getStats(
             @RequestParam LocalDateTime start,
             @RequestParam LocalDateTime end,
-            @RequestParam(required = false) String[] uri,
+            @RequestParam(required = false) String[] uris,
             @RequestParam(defaultValue = "false") boolean unique
             ) {
         log.debug("получение статистики по посещениям");
         if (start.isAfter(end)) {
             throw new IllegalArgumentException("Ошибка валидации: конец выборки назначен раньше начала");
         }
-        return service.getStats(start,end,uri,unique);
+        return service.getStats(start,end,uris,unique);
     }
 }

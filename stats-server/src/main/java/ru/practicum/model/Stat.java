@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 public class Stat {
 
     @Id
-    @GeneratedValue
-    @Column
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column(name = "stat_id")
     private Long id;
 
     private String app;
@@ -26,6 +26,6 @@ public class Stat {
 
     private String ip;
 
-    @JsonFormat(pattern = "YYYY-MM-DD HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 }

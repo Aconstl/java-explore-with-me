@@ -7,30 +7,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import ru.practicum.model.HitDto;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+
 
 @Service
-public class StatsClient extends Client {
-
-    private static final String API_PREFIX = "/stats";
+public class HitClient extends Client {
+    private static final String API_PREFIX = "/hit";
 
     @Autowired
-    public StatsClient(@Value("${ewm-stats.url}") String clientUrl, RestTemplateBuilder builder) {
+    public HitClient(@Value("${stats-server.url}") String clientUrl, RestTemplateBuilder builder) {
         super (builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(clientUrl + API_PREFIX))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build());
     }
 
-    public ResponseEntity<Object> getHits (LocalDateTime start, LocalDateTime end, String[] uri, Boolean unique) {
-        Map<String,Object> parameters = Map.of(
-                "start", start,
-                "end", end,
-                "uri", uri,
-                "unique",unique
-        );
-        return get("",parameters);
+    public ResponseEntity<Object> newHit(String app, String uri, String ip, LocalDateTime timestamp) {
+        HitDto hitDto = new HitDto(app,uri,ip,timestamp);
+        return post("", hitDto);
     }
+
 }

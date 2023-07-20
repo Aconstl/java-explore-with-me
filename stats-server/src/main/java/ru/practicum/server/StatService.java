@@ -23,8 +23,8 @@ public class StatService {
         repository.save(stat);
     }
 
-    public List<StatDtoOut> getStats(LocalDateTime start,LocalDateTime end,String[] uri, boolean unique) {
-       if (uri == null || uri.length == 0) {
+    public List<StatDtoOut> getStats(LocalDateTime start,LocalDateTime end,String[] uris, boolean unique) {
+       if (uris == null || uris.length == 0) {
            if (unique) {
                return repository.getStatsUniqWithoutUri(start,end);
            } else {
@@ -32,9 +32,9 @@ public class StatService {
            }
        } else {
            if (unique) {
-               return repository.getStatsUniqWithUri(uri,start,end);
+               return repository.getStatsUniqWithUri(start,end,uris);
            } else {
-               return repository.getStatsNoUniqWithUri(uri,start,end);
+               return repository.getStatsNoUniqWithUri(start,end,uris);
            }
        }
     }
