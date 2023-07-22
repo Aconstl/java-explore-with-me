@@ -18,13 +18,13 @@ public class StatsClient extends Client {
 
     @Autowired
     public StatsClient(@Value("${stats-server.url}") String clientUrl, RestTemplateBuilder builder) {
-        super (builder
+        super(builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(clientUrl + API_PREFIX))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build());
     }
 
-    public ResponseEntity<Object> getHits (LocalDateTime start, LocalDateTime end, String[] uri, Boolean unique) {
+    public ResponseEntity<Object> getHits(LocalDateTime start, LocalDateTime end, String[] uri, Boolean unique) {
         Map<String,Object> parameters = Map.of(
                 "start", start,
                 "end", end,

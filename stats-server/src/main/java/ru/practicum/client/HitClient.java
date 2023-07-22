@@ -18,7 +18,7 @@ public class HitClient extends Client {
 
     @Autowired
     public HitClient(@Value("${stats-server.url}") String clientUrl, RestTemplateBuilder builder) {
-        super (builder
+        super(builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(clientUrl + API_PREFIX))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build());

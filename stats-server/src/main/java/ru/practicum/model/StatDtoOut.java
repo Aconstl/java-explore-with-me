@@ -3,8 +3,6 @@ package ru.practicum.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-
 @AllArgsConstructor
 @Getter
 public class StatDtoOut {
