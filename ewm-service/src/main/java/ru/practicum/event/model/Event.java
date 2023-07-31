@@ -42,4 +42,7 @@ public class Event {
     private State state;
     private String title;
 
+    private Long confirmedRequests;
+    private Long views;
+    private LocalDateTime publishedOn;
 }

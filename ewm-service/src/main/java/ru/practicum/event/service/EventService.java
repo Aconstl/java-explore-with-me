@@ -3,10 +3,7 @@ package ru.practicum.event.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.Pagination;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.model.EventFullDto;
-import ru.practicum.event.model.EventShortDto;
-import ru.practicum.event.model.SortEvent;
+import ru.practicum.event.model.*;
 
 import org.springframework.data.domain.Pageable;
 import ru.practicum.event.repository.EventRepository;
@@ -44,10 +41,19 @@ public class EventService {
             events = eventRepository.getEventsByParam(text, categories, paid, rangeStart, rangeEnd, pageable);
         }
 
-        return events
+        return EventMapper.toListShortDto(events);
     }
 
     public EventFullDto getEventById(Long id) {
-        throw new UnsupportedOperationException("Не реализоан");
+        if (id != null) {
+            Event event = eventRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("События с указаным id не существует"));
+            if (event.getState() != State.PUBLISHED) {
+                throw new IllegalArgumentException("Событие еще не опубликовано");
+            }
+            return EventMapper.toFullDto(event);
+        } else {
+            throw new NullPointerException("id категории указан неккоректно");
+        }
     }
 }

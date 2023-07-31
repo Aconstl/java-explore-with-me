@@ -1,6 +1,7 @@
 package ru.practicum.event.repository;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-public interface EventRepository {
+public interface EventRepository extends JpaRepository<Event,Long> {
 
     @Query("SELECT e " +
             "FROM Event e " +
