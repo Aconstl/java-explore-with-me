@@ -6,7 +6,11 @@ import ru.practicum.Pagination;
 import ru.practicum.event.model.*;
 
 import org.springframework.data.domain.Pageable;
+import ru.practicum.event.model.dto.EventFullDto;
+import ru.practicum.event.model.dto.EventShortDto;
+import ru.practicum.event.model.dto.NewEventDto;
 import ru.practicum.event.repository.EventRepository;
+import ru.practicum.request.model.dto.ParticipationRequestDto;
 
 import java.util.List;
 import java.util.Set;
@@ -18,6 +22,7 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
+    //PUBLIC
     public List<EventShortDto>  getEventWithFilter(String text,
                                                    Set<Long> categories,
                                                    Boolean paid,
@@ -55,5 +60,27 @@ public class EventService {
         } else {
             throw new NullPointerException("id категории указан неккоректно");
         }
+    }
+
+
+    //PRIVATE
+    public List<EventShortDto> getUserEvents(Long id, Long from, Long size) {
+        throw new UnsupportedOperationException("Не реализован");
+    }
+
+    public EventFullDto createEvent(Long userId, NewEventDto newEvent) {
+        throw new UnsupportedOperationException("Не реализован");
+    }
+
+    public EventFullDto getUserEvent(Long userId, Long eventId) {
+        throw new UnsupportedOperationException("Не реализован");
+    }
+
+    public EventFullDto updateEvent(Long userId, Long eventId, NewEventDto newEvent) {
+        throw new UnsupportedOperationException("Не реализован");
+    }
+
+    public List<ParticipationRequestDto> getRequestsInUserEvent(Long userId, Long eventId) {
+        throw new UnsupportedOperationException("Не реализован");
     }
 }

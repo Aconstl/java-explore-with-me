@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.event.model.EventFullDto;
-import ru.practicum.event.model.EventShortDto;
+import ru.practicum.event.model.dto.EventFullDto;
+import ru.practicum.event.model.dto.EventShortDto;
 import ru.practicum.event.model.SortEvent;
 import ru.practicum.event.service.EventService;
 
@@ -43,5 +43,6 @@ public class PublicEventController {
         log.debug("Public: События (Получение подробной информации об опубикованном событии по его идентификатору)");
         return eventService.getEventById(id);
     }
+
 
 }

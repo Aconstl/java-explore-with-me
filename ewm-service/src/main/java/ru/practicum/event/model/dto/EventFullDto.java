@@ -1,8 +1,10 @@
-package ru.practicum.event.model;
+package ru.practicum.event.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.category.model.CategoryDto;
+import ru.practicum.event.model.Location;
+import ru.practicum.event.model.State;
 import ru.practicum.user.model.UserShortDto;
 
 @AllArgsConstructor
@@ -10,16 +12,24 @@ import ru.practicum.user.model.UserShortDto;
 @Builder
 @Setter
 @Getter
-public class EventShortDto {
+public class EventFullDto {
 
     private String annotation;
     private CategoryDto category;
     private Long confirmedRequests;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String createdOn;
+    private String description;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String eventDate;
     private Long id;
     private UserShortDto initiator;
+    private Location location;
     private Boolean paid;
+    private Long participantLimit;
+    private String publishedOn;
+    private Boolean requestModeration;
+    private State state;
     private String title;
     private Long views;
 

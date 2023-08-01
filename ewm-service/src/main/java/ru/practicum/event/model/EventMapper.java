@@ -2,6 +2,8 @@ package ru.practicum.event.model;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.category.model.CategoryMapper;
+import ru.practicum.event.model.dto.EventFullDto;
+import ru.practicum.event.model.dto.EventShortDto;
 import ru.practicum.user.model.UserMapper;
 
 import java.util.ArrayList;
