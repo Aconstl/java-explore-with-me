@@ -13,6 +13,8 @@ public interface RequestRepository extends JpaRepository<EventRequest,Long> {
 
     List<EventRequest> findByRequesterId(Long requesterId);
 
+    List<EventRequest> findByEventId(Long eventId);
+
     Optional<EventRequest> findByRequesterIdAndId(Long requesterId, Long id);
 
     @Modifying(clearAutomatically = true,flushAutomatically = true)
@@ -23,4 +25,6 @@ public interface RequestRepository extends JpaRepository<EventRequest,Long> {
                                           @Param("requestId") Long requestId,
                                           @Param("status") String status
     );
+
+
 }

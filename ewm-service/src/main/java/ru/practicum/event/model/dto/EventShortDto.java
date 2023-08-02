@@ -12,13 +12,15 @@ import ru.practicum.user.model.UserShortDto;
 @Getter
 public class EventShortDto {
 
-    private String annotation;
-    private CategoryDto category;
-    private Long confirmedRequests;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String eventDate;
     private Long id;
     private UserShortDto initiator;
+    private String annotation;
+    private CategoryDto category;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String eventDate;
+
+    private Long confirmedRequests;
     private Boolean paid;
     private String title;
     private Long views;

@@ -54,7 +54,7 @@ public class Event {
 
     private String title;
 
-    private Long confirmedRequests; // заявки на участие в событии (participationRequestDto)
-    private Long views;             // количество просмотров события
-    private LocalDateTime publishedOn;  // дата публикации
+    private Long views;
+
+    private LocalDateTime publishedOn;
 }

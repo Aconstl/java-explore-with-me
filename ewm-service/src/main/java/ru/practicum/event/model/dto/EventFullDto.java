@@ -14,23 +14,24 @@ import ru.practicum.user.model.UserShortDto;
 @Getter
 public class EventFullDto {
 
-    private String annotation;
-    private CategoryDto category;
-    private Long confirmedRequests;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String createdOn;
-    private String description;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String eventDate;
     private Long id;
     private UserShortDto initiator;
+    private String annotation;
+    private CategoryDto category;
+    private String description;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String createdOn;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String eventDate;
     private Location location;
     private Boolean paid;
     private Long participantLimit;
-    private String publishedOn;
     private Boolean requestModeration;
     private State state;
     private String title;
-    private Long views;
 
+
+    private Long confirmedRequests;
+    private String publishedOn;
+    private Long views;
 }

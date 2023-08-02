@@ -8,7 +8,7 @@ import ru.practicum.category.model.CategoryDto;
 import ru.practicum.category.model.CategoryMapper;
 import ru.practicum.category.model.NewCategoryDto;
 import ru.practicum.category.repository.CategoryRepository;
-import ru.practicum.customException.ConflictException;
+import ru.practicum.customException.model.ConflictException;
 
 import org.springframework.data.domain.Pageable;
 import java.util.List;

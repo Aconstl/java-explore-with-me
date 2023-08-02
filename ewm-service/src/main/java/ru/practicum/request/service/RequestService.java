@@ -2,7 +2,9 @@ package ru.practicum.request.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.customException.model.ConflictException;
 import ru.practicum.event.model.Event;
+import ru.practicum.event.model.State;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.request.model.EventRequest;
 import ru.practicum.request.model.RequestMapper;
@@ -38,11 +40,37 @@ public class RequestService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Событие с указаным id не найдено"));
 
+        //нельзя добавить повторный запрос (Ожидается код ошибки 409)
+        if (requestRepository.findByRequesterIdAndId(userId, eventId).isPresent()) {
+            throw new ConflictException("Повторно запрос создать запрещено");
+        }
+
+        //инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
+        if (event.getInitiator().getId() == requester.getId()) {
+            throw new ConflictException("Пользователь не может оставлять заявку на собственное событие");
+        }
+
+        //нельзя участвовать в неопубликованном событии (Ожидается код ошибки 409)
+        if (event.getState() != State.PUBLISHED) {
+            throw new ConflictException("Данное событие еще не опубликовано");
+        }
+
+        //если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
+        List<EventRequest> requests = requestRepository.findByEventId(eventId);
+        if (event.getParticipantLimit() != 0 && event.getParticipantLimit() <= requests.size()) {
+            throw new ConflictException("Достигнут лимит запросов на участие");
+        }
+
         EventRequest request = new EventRequest();
             request.setRequester(requester);
             request.setEvent(event);
             request.setCreated(LocalDateTime.now());
-            request.setStatus(Status.PENDING);
+        //если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного
+            if (event.getRequestModeration()) {
+                request.setStatus(Status.PENDING);
+            } else {
+                request.setStatus(Status.CONFIRMED);
+            }
 
         request = requestRepository.save(request);
 
