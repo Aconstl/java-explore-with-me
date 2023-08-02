@@ -26,19 +26,19 @@ public class AdminUserController {
             @RequestParam(defaultValue = "0") Long from,
             @RequestParam(defaultValue = "10") Long size
     ) {
-        log.debug("Получение информации о пользователях");
+        log.debug("Admin: Пользователи (Получение информации о пользователях)");
         return userService.getUsers(ids,from,size);
     }
 
     @PostMapping
     public UserDto createUser(@RequestBody @Valid NewUserRequest user) {
-        log.debug("Добавление нового пользователя");
+        log.debug("Admin: Пользователи (Добавление нового пользователя)");
         return userService.createUser(user);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Long userId) {
-        log.debug("Удаление пользователя");
+        log.debug("Admin: Пользователи (Удаление пользователя)");
         userService.deleteUser(userId);
     }
 

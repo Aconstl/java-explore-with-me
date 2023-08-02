@@ -23,26 +23,38 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "initiator_id")
     private User initiator;
+
     private String annotation;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
     private String description;
+
     private LocalDateTime createdOn;
+
     private LocalDateTime eventDate;
+
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_id")
     private Location location;
+
     private Boolean paid;
+
     private Long participantLimit;
+
     private Boolean requestModeration;
+
     private State state;
+
     private String title;
 
-    private Long confirmedRequests;
-    private Long views;
-    private LocalDateTime publishedOn;
+    private Long confirmedRequests; // заявки на участие в событии (participationRequestDto)
+    private Long views;             // количество просмотров события
+    private LocalDateTime publishedOn;  // дата публикации
 }

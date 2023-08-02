@@ -18,7 +18,7 @@ public class EventRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "event_id")
+    @Column(name = "request_id")
     private Long id;
 
     @OneToOne

@@ -26,7 +26,10 @@ public class RequestService {
     private final UserRepository userRepository;
 
     public List<ParticipationRequestDto> getUserRequest(Long userId) {
-        throw new UnsupportedOperationException("Не реализован");
+        User requester = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь с указаным id не найден"));
+        List<EventRequest> requests = requestRepository.findByRequesterId(userId);
+        return RequestMapper.toListDto(requests);
     }
 
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
@@ -47,6 +50,15 @@ public class RequestService {
     }
 
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
-        throw new UnsupportedOperationException("Не реализован");
+      //  User requester = userRepository.findById(userId)
+      //          .orElseThrow(() -> new IllegalArgumentException("Пользователь с указаным id не найден"));
+
+        EventRequest request = requestRepository.findByRequesterIdAndId(userId,requestId).orElseThrow(
+                () -> new IllegalArgumentException("Запроса с такими параметрами не существует")
+        );
+        request.setStatus(Status.REJECTED);
+
+        request = requestRepository.changeStatusRequest(userId,requestId,request.getStatus().toString()).get();
+        return RequestMapper.toDto(request);
     }
 }
