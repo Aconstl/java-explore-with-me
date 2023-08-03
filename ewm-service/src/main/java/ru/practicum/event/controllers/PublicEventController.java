@@ -31,14 +31,14 @@ public class PublicEventController {
             @RequestParam(required = false) LocalDateTime rangeEnd,
             @RequestParam(defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(required = false) SortEvent sort,
-            @RequestParam(required = false) Long from,
-            @RequestParam(required = false) Long size
+            @RequestParam(defaultValue = "0") Long from,
+            @RequestParam(defaultValue = "10") Long size
             ) {
         log.debug("Public: События (Получение событий с возможностью фильтрации)");
         return eventService.getEventWithFilter(text,categories,paid,rangeStart,rangeEnd,onlyAvailable,sort,from,size);
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public EventFullDto getEventById(@PathVariable Long id) {
         log.debug("Public: События (Получение подробной информации об опубикованном событии по его идентификатору)");
         return eventService.getEventById(id);

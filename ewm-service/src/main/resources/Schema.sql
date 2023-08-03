@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS public.events
     title              VARCHAR(255),
     state              VARCHAR,
     views  			   BIGINT,
-    published_on       TIMESTAMP WITHOUT TIME ZONE
+    published_on       TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT pk_events PRIMARY KEY (event_id),
     CONSTRAINT events_initiator_FK FOREIGN KEY (initiator_id) REFERENCES Public.users(user_id),
     CONSTRAINT events_category_FK FOREIGN KEY (category_id) REFERENCES Public.categories(category_id),
