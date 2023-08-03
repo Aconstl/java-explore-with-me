@@ -4,8 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import javax.validation.ValidationException;
+import ru.practicum.customException.model.BadRequestException;
 
 @UtilityClass
 public class Pagination {
@@ -22,7 +21,7 @@ public class Pagination {
                 return PageRequest.of(page.intValue() - 1, size.intValue());
             }
         } else {
-            throw new ValidationException("Pagination: Неккоректное количество запрашиваемых значений");
+            throw new BadRequestException("Pagination: Неккоректное количество запрашиваемых значений");
         }
     }
 
@@ -38,7 +37,7 @@ public class Pagination {
                 return PageRequest.of(page.intValue() - 1, size.intValue(), Sort.by(sort));
             }
         } else {
-            throw new ValidationException("Pagination: Неккоректное количество запрашиваемых значений");
+            throw new BadRequestException("Pagination: Неккоректное количество запрашиваемых значений");
         }
     }
 }

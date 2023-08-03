@@ -3,6 +3,7 @@ package ru.practicum.request.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.customException.model.ConflictException;
+import ru.practicum.customException.model.NotFoundException;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.State;
 import ru.practicum.event.repository.EventRepository;
@@ -28,17 +29,21 @@ public class RequestService {
     private final UserRepository userRepository;
 
     public List<ParticipationRequestDto> getUserRequest(Long userId) {
-        User requester = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь с указаным id не найден"));
+  //      if (userId != null) {
+            User requester = userRepository.findById(userId)
+                    .orElseThrow(() -> new NotFoundException("Пользователь с указаным id не найден"));
+  //      } else {
+   //         throw new BadRequestException("id Пользователя неккоретно");
+   //     }
         List<EventRequest> requests = requestRepository.findByRequesterId(userId);
         return RequestMapper.toListDto(requests);
     }
 
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
         User requester = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь с указаным id не найден"));
+                .orElseThrow(() -> new NotFoundException("Пользователь с указаным id не найден"));
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("Событие с указаным id не найдено"));
+                .orElseThrow(() -> new NotFoundException("Событие с указаным id не найдено"));
 
         //нельзя добавить повторный запрос (Ожидается код ошибки 409)
         if (requestRepository.findByRequesterIdAndId(userId, eventId).isPresent()) {
@@ -82,7 +87,7 @@ public class RequestService {
       //          .orElseThrow(() -> new IllegalArgumentException("Пользователь с указаным id не найден"));
 
         EventRequest request = requestRepository.findByRequesterIdAndId(userId,requestId).orElseThrow(
-                () -> new IllegalArgumentException("Запроса с такими параметрами не существует")
+                () -> new NotFoundException("Запроса с такими параметрами не существует")
         );
         request.setStatus(Status.REJECTED);
 

@@ -3,6 +3,7 @@ package ru.practicum.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.Pagination;
+import ru.practicum.customException.model.NotFoundException;
 import ru.practicum.user.model.NewUserRequest;
 import ru.practicum.user.model.User;
 import ru.practicum.user.model.UserDto;
@@ -31,7 +32,8 @@ public class UserService {
 
     public void deleteUser(Long userId) {
         userRepository.findById(userId).ifPresentOrElse(userRepository::delete, () -> {
-            throw new IllegalArgumentException("Пользователь для удаления не найден");
+            //Пользователь не найден- 404
+            throw new NotFoundException("Пользователь для удаления не найден");
         });
     }
 
