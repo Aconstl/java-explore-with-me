@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
 import ru.practicum.event.model.Event;
+import ru.practicum.event.model.State;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,29 +58,24 @@ public interface EventRepository extends JpaRepository<Event,Long> {
 
     @Modifying(clearAutomatically = true,flushAutomatically = true)
     @Query(value = "UPDATE PUBLIC.Events " +
-            "SET annotation = :annotation " +
-            "WHERE event_id = :eventId AND initiator_id = :initiatorId", nativeQuery = true)
-    Optional<Event> updateAnnotation(@Param("eventId") Long eventId,
-                                     @Param("initiatorId") Long userId,
-                                     @Param("annotation") String annotation);
-
-    @Modifying(clearAutomatically = true,flushAutomatically = true)
-    @Query(value = "UPDATE PUBLIC.Events " +
-            "SET category_id = :category " +
-            "WHERE event_id = :eventId AND initiator_id = :initiatorId", nativeQuery = true)
-    Optional<Event> updateCategory(@Param("eventId") Long eventId,
-                                     @Param("initiatorId") Long userId,
-                                     @Param("category") Long category);
-
-    @Modifying(clearAutomatically = true,flushAutomatically = true)
-    @Query(value = "UPDATE PUBLIC.Events " +
             "SET annotation = :annotation, " +
             "category_id = :category, " +
             "description = :description, " +
             "event_date = :eventDate, " +
-
-            "WHERE event_id = :eventId AND initiator_id = :initiatorId", nativeQuery = true)
+            "paid = :paid, " +
+            "participant_limit = :participantLimit, " +
+            "request_moderation = :requestModeration, " +
+            "title = :title, " +
+            "state = :state " +
+            "WHERE event_id = :eventId", nativeQuery = true)
     Optional<Event> updateEvent(@Param("eventId") Long eventId,
-                                   @Param("initiatorId") Long userId,
-                                   @Param("category") Long category);
+                                @Param("category") Long categoryId,
+                                @Param("description") String description,
+                                @Param("eventDate") LocalDateTime eventDate,
+                                @Param("paid") Boolean paid,
+                                @Param("participantLimit") Long participantLimit,
+                                @Param("requestModeration") Boolean requestModeration,
+                                @Param("title") String title,
+                                @Param("state") State state
+        );
 }

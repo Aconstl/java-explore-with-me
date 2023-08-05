@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.event.model.dto.UpdateEventUserRequest;
 import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.model.dto.EventShortDto;
 import ru.practicum.event.model.dto.NewEventDto;
+import ru.practicum.event.model.requestStatus.EventRequestStatusUpdateRequest;
+import ru.practicum.event.model.requestStatus.EventRequestStatusUpdateResult;
 import ru.practicum.request.model.dto.ParticipationRequestDto;
 import ru.practicum.event.service.EventService;
 
@@ -54,22 +57,29 @@ public class PrivateEventController {
     public EventFullDto updateEvent(
             @PathVariable Long userId,
             @PathVariable Long eventId,
-            @RequestBody NewEventDto updateEvent
+            @RequestBody @Valid UpdateEventUserRequest updateEvent
     ) {
         log.debug("Private: События (Изменение события добавленного текущим пользователем)");
         return eventService.updateEvent(userId,eventId, updateEvent);
+    }
+
+    @PatchMapping("/{eventId}/requests")
+    public EventRequestStatusUpdateResult changeStatusEvent(
+            @PathVariable Long userId,
+            @PathVariable Long eventId,
+            @RequestBody @Valid EventRequestStatusUpdateRequest statusUpdateRequest
+    ) {
+        log.debug("Private: События (Изменения статуса(подтверждена,отменена) заявок на участие в событии текущего пользователя");
+        return eventService.changeStatusEvent(userId,eventId,statusUpdateRequest);
     }
 
     @GetMapping("/{eventId}/requests")
     public List<ParticipationRequestDto> getRequestsInUserEvent(
             @PathVariable Long userId,
             @PathVariable Long eventId
-    ) {
+            ) {
         log.debug("Private: События (Получение информации о запросах на участие в событии текущего пользователя)");
         return eventService.getRequestsInUserEvent(userId,eventId);
     }
-
-
-
 
 }

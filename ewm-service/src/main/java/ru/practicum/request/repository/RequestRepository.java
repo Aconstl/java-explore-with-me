@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.request.model.EventRequest;
+import ru.practicum.request.model.Status;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,5 +27,10 @@ public interface RequestRepository extends JpaRepository<EventRequest,Long> {
                                           @Param("status") String status
     );
 
+    List<EventRequest> findAllByEventIdAndIdIn(Long eventId, List<Long> id);
+
+    List<EventRequest> findAllByEventIdAndStatus(Long eventId, Status status);
+
+    List<EventRequest> findAllByEventIdAndIdInAndStatus(Long eventId, List<Long> id, Status status);
 
 }
