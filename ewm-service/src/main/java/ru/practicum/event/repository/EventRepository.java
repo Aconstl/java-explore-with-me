@@ -69,6 +69,7 @@ public interface EventRepository extends JpaRepository<Event,Long> {
             "state = :state " +
             "WHERE event_id = :eventId", nativeQuery = true)
     Optional<Event> updateEvent(@Param("eventId") Long eventId,
+                                @Param("annotation") String annotation,
                                 @Param("category") Long categoryId,
                                 @Param("description") String description,
                                 @Param("eventDate") LocalDateTime eventDate,
@@ -78,4 +79,49 @@ public interface EventRepository extends JpaRepository<Event,Long> {
                                 @Param("title") String title,
                                 @Param("state") State state
         );
+
+    @Modifying(clearAutomatically = true,flushAutomatically = true)
+    @Query(value = "UPDATE PUBLIC.Events " +
+            "SET annotation = :annotation, " +
+            "category_id = :category, " +
+            "description = :description, " +
+            "event_date = :eventDate, " +
+            "paid = :paid, " +
+            "participant_limit = :participantLimit, " +
+            "request_moderation = :requestModeration, " +
+            "title = :title, " +
+            "state = :state, " +
+            "published_on = :publishedOn " +
+            "WHERE event_id = :eventId", nativeQuery = true)
+    Optional<Event> updateEventAdm(@Param("eventId") Long eventId,
+                                @Param("annotation") String annotation,
+                                @Param("category") Long categoryId,
+                                @Param("description") String description,
+                                @Param("eventDate") LocalDateTime eventDate,
+                                @Param("paid") Boolean paid,
+                                @Param("participantLimit") Long participantLimit,
+                                @Param("requestModeration") Boolean requestModeration,
+                                @Param("title") String title,
+                                @Param("state") State state,
+                                @Param("publishedOn") LocalDateTime publishedOn
+    );
+
+    @Query("SELECT e " +
+            "FROM Event e " +
+        //    "RIGHT JOIN  EventRequest r on e.id = r.event.id " +
+            "WHERE (:users IS NULL OR e.initiator.id in :users)  " +
+            "AND (:states IS NULL OR e.state in :states) " +
+            "AND (:categories IS NULL OR e.category.id in :categories) " +
+            "AND (:rangeStart IS NULL OR e.eventDate >= :rangeStart) " +
+            "AND (:rangeEnd IS NULL OR e.eventDate <= :rangeEnd) " +
+            "GROUP BY e "// +
+         //   "HAVING count(r) < e.participantLimit"
+    )
+    List<Event> getEventFilterForAdmin(@Param("users") Set<Long> users,
+                                       @Param("states") Set<String> states,
+                                       @Param("categories") Set<Long> categories,
+                                       @Param("rangeStart") LocalDateTime rangeStart,
+                                       @Param("rangeEnd") LocalDateTime rangeEnd,
+                                          Pageable pageable);
+
 }

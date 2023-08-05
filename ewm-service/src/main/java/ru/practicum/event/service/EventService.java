@@ -147,62 +147,47 @@ public class EventService {
             return EventMapper.toFullDto(event, requestRepository);
         }
 
-        String annotation = event.getAnnotation();
-        Long categoryId = event.getCategory().getId();
-        String description = event.getDescription();
-        LocalDateTime eventDate = event.getEventDate();
+        String annotation = event.getAnnotation().equals(updEvent.getAnnotation()) ?
+                event.getAnnotation() : updEvent.getAnnotation();
+
+        Long categoryId = event.getCategory().getId().equals(updEvent.getCategory()) ?
+                event.getCategory().getId() : updEvent.getCategory();
+
+        String description = event.getDescription().equals(updEvent.getDescription()) ?
+                event.getDescription() : updEvent.getDescription();
+
+        LocalDateTime eventDate = event.getEventDate().isEqual(updEvent.getEventDate()) ?
+                event.getEventDate() : updEvent.getEventDate();
+        LocalDateTime actualPublicationTime = LocalDateTime.now().plusHours(2);
+        if (eventDate.isBefore(actualPublicationTime)) {
+            //Событие не удовлетворяет правилам создания  - 409
+            throw new ConflictException("Время мероприятия должно быть минимум через 2 часа");
+        }
+
         Location location = event.getLocation();
-        Boolean paid = event.getPaid();
-        Long participantLimit = event.getParticipantLimit();
-        Boolean requestModeration = event.getRequestModeration();
-        String title = event.getTitle();
-
-        State state = event.getState();
-
-        if (!annotation.equals(updEvent.getAnnotation())) { //annotation
-            annotation = updEvent.getAnnotation();
+        if (location.getLat() !=  updEvent.getLocation().getLat()) {  //lat
+            location.setLat(updEvent.getLocation().getLat());
+        }
+        if (location.getLon() !=  updEvent.getLocation().getLon()) {  //lon
+            location.setLon(updEvent.getLocation().getLon());
         }
 
-        if (!categoryId.equals(updEvent.getCategory())) {  //category
-            categoryId = updEvent.getCategory();
-        }
+        Boolean paid = event.getPaid().equals(updEvent.getPaid()) ?
+                event.getPaid() : updEvent.getPaid();
 
-        if (!description.equals(updEvent.getDescription())) {  //description
-            description = updEvent.getDescription();
-        }
+        Long participantLimit = event.getParticipantLimit().equals(updEvent.getParticipantLimit()) ?
+                event.getParticipantLimit() : updEvent.getParticipantLimit();
 
-        if (!eventDate.isEqual(updEvent.getEventDate())) {  //eventDate
-            eventDate = updEvent.getEventDate();
-        }
+        Boolean requestModeration = event.getRequestModeration().equals(updEvent.getRequestModeration()) ?
+                event.getRequestModeration() : updEvent.getRequestModeration();
 
-        //Location
-        Location newLocation = updEvent.getLocation();
-        if (location.getLat() !=  newLocation.getLat()) {  //lat
-            location.setLat(newLocation.getLat());
-        }
-        if (location.getLon() !=  newLocation.getLon()) {  //lon
-            location.setLon(newLocation.getLon());
-        }
+        String title = event.getTitle().equals(updEvent.getTitle()) ?
+                event.getTitle() : updEvent.getTitle();
 
-        if (!paid.equals(updEvent.getPaid())) {  //paid
-            paid = updEvent.getPaid();
-        }
-
-        if (!participantLimit.equals(updEvent.getParticipantLimit())) {  //participantLimit
-            participantLimit = updEvent.getParticipantLimit();
-        }
-
-        if (!requestModeration.equals(updEvent.getRequestModeration())) {  //requestModeration
-            requestModeration = updEvent.getRequestModeration();
-        }
-
-        if (!title.equals(updEvent.getTitle())) {  //title
-            title = updEvent.getTitle();
-        }
-
-        if (updEvent.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {  //stateAction
+        State state;
+        if (updEvent.getStateAction().equals(StateUserAction.SEND_TO_REVIEW)) {  //stateAction
             state = State.PENDING;
-        } else if (updEvent.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
+        } else if (updEvent.getStateAction().equals(StateUserAction.CANCEL_REVIEW)) {
             state = State.CANCELED;
         } else {
             throw new BadRequestException("Ошибка чтения изменения состояния события");
@@ -211,7 +196,7 @@ public class EventService {
         //Обновление БД локации и БД события
         Location loc =  locationRepository.updateEvent(location.getId(),location.getLat(),location.getLon()).get();
 
-        Event req = eventRepository.updateEvent(eventId,categoryId,
+        Event req = eventRepository.updateEvent(eventId,annotation,categoryId,
                 description,eventDate,paid,
                 participantLimit,requestModeration,title,state).get();
 
@@ -275,7 +260,13 @@ public class EventService {
                                         Long from,
                                         Long size
                                         ) {
-        throw new UnsupportedOperationException("Не реализован");
+        Pageable pageable = Pagination.setPageable(from,size);
+        List<Event> events = eventRepository.getEventFilterForAdmin(userIds,states,
+                categoryIds,rangeStart,rangeEnd,pageable);
+
+        return EventMapper.toListFulDto(events,requestRepository);
+
+    //    throw new UnsupportedOperationException("Не реализован");
     }
 
     public EventFullDto updateAdminEvent(Long eventId, UpdateEventAdminRequest updEventAdm) {
@@ -283,6 +274,10 @@ public class EventService {
                 //Не найден - 404
                 .orElseThrow(() -> new NotFoundException("События с указаным id не существует"));
 
+   //     if (!event.getState().equals(State.PENDING)) {
+   //         //Событие должно быть в состоянии ожидании публикации
+   //         throw new ConflictException("Событие должно быть в состоянии ожидании публикации");
+   //     }
 
         String annotation = event.getAnnotation().equals(updEventAdm.getAnnotation()) ?
                 event.getAnnotation() : updEventAdm.getAnnotation();
@@ -295,6 +290,11 @@ public class EventService {
 
         LocalDateTime eventDate = event.getEventDate().isEqual(updEventAdm.getEventDate()) ?
                 event.getEventDate() : updEventAdm.getEventDate();
+        LocalDateTime actualPublicationTime = LocalDateTime.now().plusHours(1);
+        if (eventDate.isBefore(actualPublicationTime)) {
+            //Событие не удовлетворяет правилам создания  - 409
+            throw new ConflictException("Время мероприятия должно быть минимум через 1 час");
+        }
 
         Location location = event.getLocation();
         if (location.getLat() !=  updEventAdm.getLocation().getLat()) {  //lat
@@ -317,29 +317,34 @@ public class EventService {
                 event.getTitle() : updEventAdm.getTitle();
 
         State state = event.getState();
-        if (updEventAdm.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {  //stateAction
-            state = State.PENDING;
-        } else if (updEventAdm.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
-            state = State.CANCELED;
-        } else {
-            throw new BadRequestException("Ошибка чтения изменения состояния события");
-        }
+        LocalDateTime publishedOn = event.getPublishedOn();
+        if (updEventAdm.getStateAction() != null) {
+            if (state.equals(State.PUBLISHED) && updEventAdm.getStateAction().equals(StateAdminAction.REJECT_EVENT)) {
+                //Событие можно отклонить, только если оно еще не опубликовано (ошибка 409)
+                throw new ConflictException("Публикацию события нельзя отклонить,оно уже опубликовано");
+            }
+            if (!state.equals(State.PENDING) && updEventAdm.getStateAction().equals(StateAdminAction.PUBLISH_EVENT)) {
+                //Событие можно публиковать, только если оно в состоянии ожидания публикации (ошибка 409)
+                throw new ConflictException("Публиковать разрешено,если оно ожидает публикации");
+            }
 
+            if (updEventAdm.getStateAction().equals(StateAdminAction.PUBLISH_EVENT)) {  //stateAction
+                state = State.PUBLISHED;
+                publishedOn = LocalDateTime.now();
+            } else if (updEventAdm.getStateAction().equals(StateAdminAction.REJECT_EVENT)) {
+                state = State.CANCELED;
+            } else {
+                throw new BadRequestException("Ошибка чтения изменения состояния события");
+            }
+        }
         //Обновление БД локации и БД события
         Location loc =  locationRepository.updateEvent(location.getId(),location.getLat(),location.getLon()).get();
 
-        Event req = eventRepository.updateEvent(eventId,categoryId,
+        Event req = eventRepository.updateEventAdm(eventId,annotation,categoryId,
                 description,eventDate,paid,
-                participantLimit,requestModeration,title,state).get();
+                participantLimit,requestModeration,title,state,publishedOn).get();
 
         return EventMapper.toFullDto(req,requestRepository);
-
-
-        throw new UnsupportedOperationException("Не реализован");
-
-
     }
-
-
 
 }

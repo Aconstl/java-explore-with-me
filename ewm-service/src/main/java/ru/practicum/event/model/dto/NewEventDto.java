@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.event.model.Location;
-import ru.practicum.event.model.StateAction;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

@@ -56,4 +56,12 @@ public class EventMapper {
 
     }
 
+    public static List<EventFullDto> toListFulDto(List<Event> events,RequestRepository requestRepository) {
+        List<EventFullDto> eventsFull = new ArrayList<>();
+        for (Event e : events) {
+            eventsFull.add(toFullDto(e,requestRepository));
+        }
+        return eventsFull;
+    }
+
 }

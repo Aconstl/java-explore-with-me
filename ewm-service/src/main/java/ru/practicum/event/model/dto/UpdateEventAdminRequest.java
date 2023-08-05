@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.event.model.Location;
-import ru.practicum.event.model.StateAction;
+import ru.practicum.event.model.StateAdminAction;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -37,5 +37,5 @@ public class UpdateEventAdminRequest {
     @Size(min = 3, max = 120)
     private String title;
 
-    private StateAction stateAction;
+    private StateAdminAction stateAction;
 }
