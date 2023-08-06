@@ -19,9 +19,13 @@ public class Compilation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "event_id")
+    @Column(name = "compilation_id")
     private Long id;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "compilationEvents",
+            joinColumns = @JoinColumn(name = "compilation_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> events;
 
     private Boolean pinned;
