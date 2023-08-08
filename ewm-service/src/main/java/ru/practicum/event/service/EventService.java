@@ -2,6 +2,7 @@ package ru.practicum.event.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.Pagination;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
@@ -52,6 +53,12 @@ public class EventService {
                                                    SortEvent sort,
                                                    Long from,
                                                    Long size) {
+        final LocalDateTime finalRangeStart = rangeStart != null ? rangeStart : LocalDateTime.now();
+        final LocalDateTime finalRangeEnd = rangeEnd != null ? rangeEnd : finalRangeStart.plusYears(1);
+        if (finalRangeStart.isAfter(finalRangeEnd)) {
+            throw new BadRequestException("Дата начала сортировки должна быть ранее конца сортировки");
+        }
+
         Pageable pageable;
         if (sort == SortEvent.EVENT_DATE) {
             pageable = Pagination.setPageable(from,size,"eventDate");
@@ -65,7 +72,6 @@ public class EventService {
         } else {
             events = eventRepository.getEventsByParam(text, categories, paid, rangeStart, rangeEnd, pageable);
         }
-
         return EventMapper.toListShortDto(events,requestRepository);
     }
 
@@ -92,6 +98,7 @@ public class EventService {
         return EventMapper.toListShortDto(eventList,requestRepository);
     }
 
+    @Transactional
     public EventFullDto createEvent(Long userId, NewEventDto newEvent) {
         LocalDateTime actualPublicationTime = LocalDateTime.now().plusHours(2);
         if (newEvent.getEventDate().isBefore(actualPublicationTime)) {
@@ -134,6 +141,7 @@ public class EventService {
         return EventMapper.toFullDto(event,requestRepository);
     }
 
+    @Transactional
     public EventFullDto updateEvent(Long userId, Long eventId, UpdateEventUserRequest updEvent) {
         Event event = eventRepository.findByInitiatorIdAndId(userId,eventId)
                 //Не найден - 404
@@ -147,16 +155,16 @@ public class EventService {
             return EventMapper.toFullDto(event, requestRepository);
         }
 
-        String annotation = event.getAnnotation().equals(updEvent.getAnnotation()) ?
+        String annotation = updEvent.getAnnotation() == null ?
                 event.getAnnotation() : updEvent.getAnnotation();
 
-        Long categoryId = event.getCategory().getId().equals(updEvent.getCategory()) ?
+        Long categoryId = updEvent.getCategory() == null ?
                 event.getCategory().getId() : updEvent.getCategory();
 
-        String description = event.getDescription().equals(updEvent.getDescription()) ?
+        String description = updEvent.getDescription() == null ?
                 event.getDescription() : updEvent.getDescription();
 
-        LocalDateTime eventDate = event.getEventDate().isEqual(updEvent.getEventDate()) ?
+        LocalDateTime eventDate = updEvent.getEventDate() == null ?       //!!!
                 event.getEventDate() : updEvent.getEventDate();
         LocalDateTime actualPublicationTime = LocalDateTime.now().plusHours(2);
         if (eventDate.isBefore(actualPublicationTime)) {
@@ -164,24 +172,22 @@ public class EventService {
             throw new ConflictException("Время мероприятия должно быть минимум через 2 часа");
         }
 
-        Location location = event.getLocation();
-        if (location.getLat() !=  updEvent.getLocation().getLat()) {  //lat
-            location.setLat(updEvent.getLocation().getLat());
-        }
-        if (location.getLon() !=  updEvent.getLocation().getLon()) {  //lon
-            location.setLon(updEvent.getLocation().getLon());
+        Location location = updEvent.getLocation() == null ?
+                event.getLocation() : updEvent.getLocation();
+        if (updEvent.getLocation() != null) {
+            locationRepository.updateLocation(location.getId(), location.getLat(), location.getLon());
         }
 
-        Boolean paid = event.getPaid().equals(updEvent.getPaid()) ?
+        Boolean paid = updEvent.getPaid() == null ?
                 event.getPaid() : updEvent.getPaid();
 
-        Long participantLimit = event.getParticipantLimit().equals(updEvent.getParticipantLimit()) ?
+        Long participantLimit = updEvent.getParticipantLimit() == null ?
                 event.getParticipantLimit() : updEvent.getParticipantLimit();
 
-        Boolean requestModeration = event.getRequestModeration().equals(updEvent.getRequestModeration()) ?
+        Boolean requestModeration = updEvent.getRequestModeration() == null ?
                 event.getRequestModeration() : updEvent.getRequestModeration();
 
-        String title = event.getTitle().equals(updEvent.getTitle()) ?
+        String title = updEvent.getTitle() == null ?
                 event.getTitle() : updEvent.getTitle();
 
         State state;
@@ -193,13 +199,10 @@ public class EventService {
             throw new BadRequestException("Ошибка чтения изменения состояния события");
         }
 
-        //Обновление БД локации и БД события
-        Location loc =  locationRepository.updateEvent(location.getId(),location.getLat(),location.getLon()).get();
-
-        Event req = eventRepository.updateEvent(eventId,annotation,categoryId,
+        eventRepository.updateEvent(eventId,annotation,categoryId,
                 description,eventDate,paid,
-                participantLimit,requestModeration,title,state).get();
-
+                participantLimit,requestModeration,title,state);
+        Event req = eventRepository.findById(eventId).get();
         return EventMapper.toFullDto(req,requestRepository);
     }
 
@@ -207,10 +210,11 @@ public class EventService {
         Event event = eventRepository.findByInitiatorIdAndId(userId,eventId)
                 //Не найден - 404
                 .orElseThrow(() -> new NotFoundException("События с указаным id не существует"));
-        List<EventRequest> requests = requestRepository.findByEventId(eventId);
+        List<EventRequest> requests = requestRepository.findAllByEventId(eventId);
         return RequestMapper.toListDto(requests);
     }
 
+    @Transactional
     public EventRequestStatusUpdateResult changeStatusEvent(Long userId, Long eventId,
                                                             EventRequestStatusUpdateRequest statusUpdateRequest) {
         Event event = eventRepository.findByInitiatorIdAndId(userId,eventId)
@@ -269,26 +273,22 @@ public class EventService {
     //    throw new UnsupportedOperationException("Не реализован");
     }
 
+    @Transactional
     public EventFullDto updateAdminEvent(Long eventId, UpdateEventAdminRequest updEventAdm) {
         Event event = eventRepository.findById(eventId)
                 //Не найден - 404
                 .orElseThrow(() -> new NotFoundException("События с указаным id не существует"));
 
-   //     if (!event.getState().equals(State.PENDING)) {
-   //         //Событие должно быть в состоянии ожидании публикации
-   //         throw new ConflictException("Событие должно быть в состоянии ожидании публикации");
-   //     }
-
-        String annotation = event.getAnnotation().equals(updEventAdm.getAnnotation()) ?
+        String annotation = updEventAdm.getAnnotation() == null ?
                 event.getAnnotation() : updEventAdm.getAnnotation();
 
-        Long categoryId = event.getCategory().getId().equals(updEventAdm.getCategory()) ?
+        Long categoryId = updEventAdm.getCategory() == null ?
                 event.getCategory().getId() : updEventAdm.getCategory();
 
-        String description = event.getDescription().equals(updEventAdm.getDescription()) ?
+        String description = updEventAdm.getDescription() == null ?
                 event.getDescription() : updEventAdm.getDescription();
 
-        LocalDateTime eventDate = event.getEventDate().isEqual(updEventAdm.getEventDate()) ?
+        LocalDateTime eventDate = updEventAdm.getEventDate() == null ?       //!!!
                 event.getEventDate() : updEventAdm.getEventDate();
         LocalDateTime actualPublicationTime = LocalDateTime.now().plusHours(1);
         if (eventDate.isBefore(actualPublicationTime)) {
@@ -296,24 +296,22 @@ public class EventService {
             throw new ConflictException("Время мероприятия должно быть минимум через 1 час");
         }
 
-        Location location = event.getLocation();
-        if (location.getLat() !=  updEventAdm.getLocation().getLat()) {  //lat
-            location.setLat(updEventAdm.getLocation().getLat());
-        }
-        if (location.getLon() !=  updEventAdm.getLocation().getLon()) {  //lon
-            location.setLon(updEventAdm.getLocation().getLon());
+        Location location = updEventAdm.getLocation() == null ?
+                event.getLocation() : updEventAdm.getLocation();
+        if (updEventAdm.getLocation() != null) {
+            locationRepository.updateLocation(location.getId(), location.getLat(), location.getLon());
         }
 
-        Boolean paid = event.getPaid().equals(updEventAdm.getPaid()) ?
+        Boolean paid = updEventAdm.getPaid() == null ?
                 event.getPaid() : updEventAdm.getPaid();
 
-        Long participantLimit = event.getParticipantLimit().equals(updEventAdm.getParticipantLimit()) ?
+        Long participantLimit = updEventAdm.getParticipantLimit() == null ?
                 event.getParticipantLimit() : updEventAdm.getParticipantLimit();
 
-        Boolean requestModeration = event.getRequestModeration().equals(updEventAdm.getRequestModeration()) ?
+        Boolean requestModeration = updEventAdm.getRequestModeration() == null ?
                 event.getRequestModeration() : updEventAdm.getRequestModeration();
 
-        String title = event.getTitle().equals(updEventAdm.getTitle()) ?
+        String title = updEventAdm.getTitle() == null ?
                 event.getTitle() : updEventAdm.getTitle();
 
         State state = event.getState();
@@ -337,13 +335,12 @@ public class EventService {
                 throw new BadRequestException("Ошибка чтения изменения состояния события");
             }
         }
-        //Обновление БД локации и БД события
-        Location loc =  locationRepository.updateEvent(location.getId(),location.getLat(),location.getLon()).get();
 
-        Event req = eventRepository.updateEventAdm(eventId,annotation,categoryId,
+        eventRepository.updateEventAdm(eventId,annotation,categoryId,
                 description,eventDate,paid,
-                participantLimit,requestModeration,title,state,publishedOn).get();
+                participantLimit,requestModeration,title,state,publishedOn);
 
+        Event req = eventRepository.findById(eventId).get();
         return EventMapper.toFullDto(req,requestRepository);
     }
 

@@ -24,7 +24,7 @@ public class StatController {
     public ResponseEntity<Object> newHit(
             @RequestBody @Valid HitDto hitDto
             ) {
-        log.debug("сохранение информации о запросе");
+        log.info("сохранение информации о запросе");
         service.newHit(hitDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -36,7 +36,7 @@ public class StatController {
             @RequestParam(required = false) String[] uris,
             @RequestParam(defaultValue = "false") boolean unique
             ) {
-        log.debug("получение статистики по посещениям");
+        log.info("получение статистики по посещениям");
         if (start.isAfter(end)) {
             throw new IllegalArgumentException("Ошибка валидации: конец выборки назначен раньше начала");
         }

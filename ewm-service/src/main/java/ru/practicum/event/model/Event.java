@@ -28,33 +28,45 @@ public class Event {
     @JoinColumn(name = "initiator_id")
     private User initiator;
 
+    @JoinColumn(name = "annotation")
     private String annotation;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @JoinColumn(name = "description")
     private String description;
 
+    @JoinColumn(name = "created_on")
     private LocalDateTime createdOn;
 
+    @JoinColumn(name = "event_date")
     private LocalDateTime eventDate;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "location_id")
     private Location location;
 
+    @JoinColumn(name = "paid")
     private Boolean paid;
 
+    @JoinColumn(name = "participant_limit")
     private Long participantLimit;
 
+    @JoinColumn(name = "request_moderation")
     private Boolean requestModeration;
 
+    @JoinColumn(name = "title")
     private String title;
 
+    @JoinColumn(name = "state")
+    @Enumerated(value = EnumType.STRING)
     private State state;
 
+    @JoinColumn(name = "views")
     private Long views;
 
+    @JoinColumn(name = "published_on")
     private LocalDateTime publishedOn;
 }

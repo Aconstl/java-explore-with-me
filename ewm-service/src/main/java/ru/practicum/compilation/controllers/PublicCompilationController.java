@@ -24,7 +24,7 @@ public class PublicCompilationController {
             @RequestParam(defaultValue = "0") Long from,
             @RequestParam(defaultValue = "10") Long size
     ) {
-        log.debug("Public: Подборка событий (Получение подборок событий)");
+        log.info("Public: Подборка событий (Получение подборок событий)");
         return compilationService.getAllWithFilter(pinned, from, size);
     }
 
@@ -32,7 +32,7 @@ public class PublicCompilationController {
     public CompilationDto getCompilation(
             @PathVariable Long compId
     ) {
-        log.debug("Public: Подборка событий (Получение подборки событий по его id)");
+        log.info("Public: Подборка событий (Получение подборки событий по его id)");
         return compilationService.getCompilation(compId);
     }
 

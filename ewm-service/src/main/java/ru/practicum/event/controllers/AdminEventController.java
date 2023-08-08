@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/admin/events")
 @RequiredArgsConstructor
 @Validated
-public class AdminEventConroller {
+public class AdminEventController {
 
     private final EventService eventService;
 
@@ -32,7 +32,7 @@ public class AdminEventConroller {
             @RequestParam(defaultValue = "0") Long from,
             @RequestParam(defaultValue = "10") Long size
             ) {
-        log.debug("Admin: События (Поиск событий)");
+        log.info("Admin: События (Поиск событий)");
         return eventService.getEvents(userIds, states, categoryIds, rangeStart, rangeEnd, from, size);
     }
 
@@ -41,7 +41,7 @@ public class AdminEventConroller {
             @PathVariable Long eventId,
             @RequestBody UpdateEventAdminRequest updEventAdm
             ) {
-        log.debug("Admin: События (Редактирование данных события и его статуса (отклонение/публикация)");
+        log.info("Admin: События (Редактирование данных события и его статуса (отклонение/публикация)");
         return eventService.updateAdminEvent(eventId,updEventAdm);
     }
 

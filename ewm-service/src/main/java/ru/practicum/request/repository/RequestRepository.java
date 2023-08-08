@@ -14,12 +14,12 @@ public interface RequestRepository extends JpaRepository<EventRequest,Long> {
 
     List<EventRequest> findByRequesterId(Long requesterId);
 
-    List<EventRequest> findByEventId(Long eventId);
+    List<EventRequest> findAllByEventId(Long eventId);
 
     Optional<EventRequest> findByRequesterIdAndId(Long requesterId, Long id);
 
     @Modifying(clearAutomatically = true,flushAutomatically = true)
-    @Query(value = "UPDATE PUBLIC.REQUESTS " +
+    @Query(value = "UPDATE PUBLIC.Event_Requests " +
             "SET status = :status " +
             "WHERE request_id = :requestId AND requester_id = :userId", nativeQuery = true)
     Optional<EventRequest> changeStatusRequest(@Param("userId") Long userId,

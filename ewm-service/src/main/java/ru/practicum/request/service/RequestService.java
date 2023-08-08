@@ -61,7 +61,7 @@ public class RequestService {
         }
 
         //если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
-        List<EventRequest> requests = requestRepository.findByEventId(eventId);
+        List<EventRequest> requests = requestRepository.findAllByEventId(eventId);
         if (event.getParticipantLimit() != 0 && event.getParticipantLimit() <= requests.size()) {
             throw new ConflictException("Достигнут лимит запросов на участие");
         }

@@ -22,7 +22,7 @@ public class RequestController {
     public List<ParticipationRequestDto> getUserRequest(
             @PathVariable Long userId
     ) {
-        log.debug("Private: Запросы на участие (Получение информации о заявках текущего пользователя на участие в чужих событиях)");
+        log.info("Private: Запросы на участие (Получение информации о заявках текущего пользователя на участие в чужих событиях)");
         return requestService.getUserRequest(userId);
     }
 
@@ -31,7 +31,7 @@ public class RequestController {
             @PathVariable Long userId,
             @RequestParam Long eventId
     ) {
-        log.debug("Private: Запросы на участие (Добавление запроса от текущего пользователя на участие в событии)");
+        log.info("Private: Запросы на участие (Добавление запроса от текущего пользователя на участие в событии)");
         return requestService.createRequest(userId,eventId);
     }
 
@@ -40,7 +40,7 @@ public class RequestController {
             @PathVariable Long userId,
             @PathVariable Long requestId
     ) {
-        log.debug("Private: Запросы на участие (Отмена своего запроса на участие в событии)");
+        log.info("Private: Запросы на участие (Отмена своего запроса на участие в событии)");
         return requestService.cancelRequest(userId,requestId);
     }
 }

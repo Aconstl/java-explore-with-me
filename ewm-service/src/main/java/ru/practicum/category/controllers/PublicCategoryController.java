@@ -23,13 +23,13 @@ public class PublicCategoryController {
             @RequestParam(defaultValue = "0") Long from,
             @RequestParam(defaultValue = "10") Long size
     ) {
-        log.debug("Public: Категории (Получение категорий)");
+        log.info("Public: Категории (Получение категорий)");
         return categoryService.getCategories(from,size);
     }
 
     @GetMapping("/{catId}")
     public CategoryDto getCategory(@PathVariable Long catId) {
-        log.debug("Public: Категории (Получение информации по её идентификатору)");
+        log.info("Public: Категории (Получение информации по её идентификатору)");
         return categoryService.getCategory(catId);
     }
 

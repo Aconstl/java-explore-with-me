@@ -17,7 +17,7 @@ public class EventMapper {
         return EventShortDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
-                .confirmedRequests((long) requestRepository.findByEventId(event.getId()).size())
+                .confirmedRequests((long) requestRepository.findAllByEventId(event.getId()).size())
                 .eventDate(event.getEventDate().toString())
                 .id(event.getId())
                 .initiator(UserMapper.toShortDto(event.getInitiator()))
@@ -39,21 +39,20 @@ public class EventMapper {
         return EventFullDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
-                .confirmedRequests((long) requestRepository.findByEventId(event.getId()).size())
+                .confirmedRequests((long) requestRepository.findAllByEventId(event.getId()).size())
                 .createdOn(event.getCreatedOn().toString())
                 .description(event.getDescription())
-                .eventDate(event.getEventDate().toString())
+                 .eventDate(event.getEventDate().toString())
                 .id(event.getId())
                 .initiator(UserMapper.toShortDto(event.getInitiator()))
                 .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
-                .publishedOn(event.getPublishedOn().toString())
+                .publishedOn(event.getPublishedOn() != null ? event.getPublishedOn().toString() : null)
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .title(event.getTitle())
                 .views(event.getViews())
                 .build();
-
     }
 
     public static List<EventFullDto> toListFulDto(List<Event> events,RequestRepository requestRepository) {

@@ -13,7 +13,7 @@ import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("/admin/compilation")
+@RequestMapping("/admin/compilations")
 @RequiredArgsConstructor
 @Validated
 public class AdminCompilationController {
@@ -22,20 +22,20 @@ public class AdminCompilationController {
 
     @PostMapping
     public CompilationDto createCompilation(@RequestBody @Valid NewCompilationDto newCompilation) {
-        log.debug("Admin: Подборка событий (Добавление новой подборки)");
+        log.info("Admin: Подборка событий (Добавление новой подборки)");
         return compilationService.createCompilation(newCompilation);
     }
 
     @DeleteMapping("/{compId}")
     public void deleteCompilation(@PathVariable Long compId) {
-        log.debug("Admin: Подборка событий (Удаление подборки)");
+        log.info("Admin: Подборка событий (Удаление подборки)");
         compilationService.deleteCompilation(compId);
     }
 
     @PatchMapping("/{compId}")
     public CompilationDto updateCompilation(@PathVariable Long compId,
                                   @RequestBody @Valid UpdateCompilationRequest updCompilation) {
-        log.debug("Admin: Подборка событий (Обновление подборки)");
+        log.info("Admin: Подборка событий (Обновление подборки)");
         return compilationService.updateCompilation(compId,updCompilation);
     }
 

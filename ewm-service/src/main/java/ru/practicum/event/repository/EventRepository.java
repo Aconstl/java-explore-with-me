@@ -21,8 +21,8 @@ public interface EventRepository extends JpaRepository<Event,Long> {
             "WHERE (:text IS NULL OR e.description like %:text% OR e.annotation like %:text%)  " +
             "AND (:categories IS NULL OR e.category.id in :categories) " +
             "AND (:paid IS NULL OR e.paid = :paid) " +
-            "AND (:rangeStart IS NULL OR e.eventDate >= :rangeStart) " +
-            "AND (:rangeEnd IS NULL OR e.eventDate <= :rangeEnd) " +
+            "AND (e.eventDate >= :rangeStart) " +
+            "AND (e.eventDate <= :rangeEnd) " +
             "AND (r.status = ru.practicum.request.model.Status.CONFIRMED OR r.status = null) " +
             "AND (e.state = ru.practicum.event.model.State.PUBLISHED) " +
             "GROUP BY e " +
@@ -40,9 +40,10 @@ public interface EventRepository extends JpaRepository<Event,Long> {
             "WHERE (:text IS NULL OR e.description like %:text% OR e.annotation like %:text%)  " +
             "AND (:categories IS NULL OR e.category.id in :categories) " +
             "AND (:paid IS NULL OR e.paid = :paid) " +
-            "AND (:rangeStart IS NULL OR e.eventDate >= :rangeStart) " +
-            "AND (e.state = ru.practicum.event.model.State.PUBLISHED) " +
-            "AND (:rangeEnd IS NULL OR e.eventDate <= :rangeEnd)")
+            "AND (e.eventDate >= :rangeStart) " +
+            "AND (e.eventDate <= :rangeEnd) " +
+            "AND (e.state = ru.practicum.event.model.State.PUBLISHED) "
+                 )
     List<Event> getEventsByParam(@Param("text") String text,
                                  @Param("categories") Set<Long> categories,
                                  @Nullable @Param("paid") Boolean paid,
@@ -68,7 +69,7 @@ public interface EventRepository extends JpaRepository<Event,Long> {
             "title = :title, " +
             "state = :state " +
             "WHERE event_id = :eventId", nativeQuery = true)
-    Optional<Event> updateEvent(@Param("eventId") Long eventId,
+    void updateEvent(@Param("eventId") Long eventId,
                                 @Param("annotation") String annotation,
                                 @Param("category") Long categoryId,
                                 @Param("description") String description,
@@ -83,7 +84,7 @@ public interface EventRepository extends JpaRepository<Event,Long> {
     @Modifying(clearAutomatically = true,flushAutomatically = true)
     @Query(value = "UPDATE PUBLIC.Events " +
             "SET annotation = :annotation, " +
-            "category_id = :category, " +
+            "category_id = :category, "  +
             "description = :description, " +
             "event_date = :eventDate, " +
             "paid = :paid, " +
@@ -93,7 +94,7 @@ public interface EventRepository extends JpaRepository<Event,Long> {
             "state = :state, " +
             "published_on = :publishedOn " +
             "WHERE event_id = :eventId", nativeQuery = true)
-    Optional<Event> updateEventAdm(@Param("eventId") Long eventId,
+    void updateEventAdm(@Param("eventId") Long eventId,
                                 @Param("annotation") String annotation,
                                 @Param("category") Long categoryId,
                                 @Param("description") String description,
@@ -112,8 +113,8 @@ public interface EventRepository extends JpaRepository<Event,Long> {
             "WHERE (:users IS NULL OR e.initiator.id in :users)  " +
             "AND (:states IS NULL OR e.state in :states) " +
             "AND (:categories IS NULL OR e.category.id in :categories) " +
-            "AND (:rangeStart IS NULL OR e.eventDate >= :rangeStart) " +
-            "AND (:rangeEnd IS NULL OR e.eventDate <= :rangeEnd) " +
+            "AND (e.eventDate >= :rangeStart) " +
+            "AND (e.eventDate <= :rangeEnd) " +
             "GROUP BY e "// +
          //   "HAVING count(r) < e.participantLimit"
     )
