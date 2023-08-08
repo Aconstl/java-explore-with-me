@@ -2,7 +2,6 @@ package ru.practicum.event.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
@@ -57,56 +56,6 @@ public interface EventRepository extends JpaRepository<Event,Long> {
 
     Optional<Event> findByInitiatorIdAndId(Long initiatorId, Long id);
 
-    @Modifying(clearAutomatically = true,flushAutomatically = true)
-    @Query(value = "UPDATE PUBLIC.Events " +
-            "SET annotation = :annotation, " +
-            "category_id = :category, " +
-            "description = :description, " +
-            "event_date = :eventDate, " +
-            "paid = :paid, " +
-            "participant_limit = :participantLimit, " +
-            "request_moderation = :requestModeration, " +
-            "title = :title, " +
-            "state = :state " +
-            "WHERE event_id = :eventId", nativeQuery = true)
-    void updateEvent(@Param("eventId") Long eventId,
-                                @Param("annotation") String annotation,
-                                @Param("category") Long categoryId,
-                                @Param("description") String description,
-                                @Param("eventDate") LocalDateTime eventDate,
-                                @Param("paid") Boolean paid,
-                                @Param("participantLimit") Long participantLimit,
-                                @Param("requestModeration") Boolean requestModeration,
-                                @Param("title") String title,
-                                @Param("state") State state
-        );
-
-    @Modifying(clearAutomatically = true,flushAutomatically = true)
-    @Query(value = "UPDATE PUBLIC.Events " +
-            "SET annotation = :annotation, " +
-            "category_id = :category, "  +
-            "description = :description, " +
-            "event_date = :eventDate, " +
-            "paid = :paid, " +
-            "participant_limit = :participantLimit, " +
-            "request_moderation = :requestModeration, " +
-            "title = :title, " +
-            "state = :state, " +
-            "published_on = :publishedOn " +
-            "WHERE event_id = :eventId", nativeQuery = true)
-    void updateEventAdm(@Param("eventId") Long eventId,
-                                @Param("annotation") String annotation,
-                                @Param("category") Long categoryId,
-                                @Param("description") String description,
-                                @Param("eventDate") LocalDateTime eventDate,
-                                @Param("paid") Boolean paid,
-                                @Param("participantLimit") Long participantLimit,
-                                @Param("requestModeration") Boolean requestModeration,
-                                @Param("title") String title,
-                                @Param("state") State state,
-                                @Param("publishedOn") LocalDateTime publishedOn
-    );
-
     @Query("SELECT e " +
             "FROM Event e " +
         //    "RIGHT JOIN  EventRequest r on e.id = r.event.id " +
@@ -114,17 +63,16 @@ public interface EventRepository extends JpaRepository<Event,Long> {
             "AND (:states IS NULL OR e.state in :states) " +
             "AND (:categories IS NULL OR e.category.id in :categories) " +
             "AND (e.eventDate >= :rangeStart) " +
-            "AND (e.eventDate <= :rangeEnd) " +
-            "GROUP BY e "// +
+            "AND (e.eventDate <= :rangeEnd) "// +
+        //    "GROUP BY e "// +
          //   "HAVING count(r) < e.participantLimit"
     )
     List<Event> getEventFilterForAdmin(@Param("users") Set<Long> users,
-                                       @Param("states") Set<String> states,
+                                       @Param("states") Set<State> states,
                                        @Param("categories") Set<Long> categories,
                                        @Param("rangeStart") LocalDateTime rangeStart,
                                        @Param("rangeEnd") LocalDateTime rangeEnd,
                                           Pageable pageable);
-
 
     List<Event> findAllByIdIn(List<Long> events);
 }

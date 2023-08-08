@@ -31,5 +31,6 @@ public class EventRequest {
 
     private LocalDateTime created;
 
+    @Enumerated(value = EnumType.STRING)
     private Status status;
 }

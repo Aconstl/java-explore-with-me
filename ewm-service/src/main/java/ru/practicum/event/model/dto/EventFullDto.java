@@ -32,6 +32,7 @@ public class EventFullDto {
 
 
     private Long confirmedRequests;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String publishedOn;
     private Long views;
 }

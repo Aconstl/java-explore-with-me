@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.customException.model.BadRequestException;
 import ru.practicum.event.model.dto.UpdateEventUserRequest;
 import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.model.dto.EventShortDto;
@@ -79,7 +80,10 @@ public class PrivateEventController {
             @RequestBody @Valid EventRequestStatusUpdateRequest statusUpdateRequest
     ) {
         log.info("Private: События (Изменения статуса(подтверждена,отменена) заявок на участие в событии текущего пользователя");
-        return eventService.changeStatusEvent(userId,eventId,statusUpdateRequest);
+        EventRequestStatusUpdateResult result = eventService.changeStatusEvent(userId,eventId,statusUpdateRequest);
+        log.info("Изменение статусов заявок выполнено успешно");
+        return result;
+       // return eventService.changeStatusEvent(userId,eventId,statusUpdateRequest);
     }
 
     @GetMapping("/{eventId}/requests")

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Setter
 @Getter
-public class UpdateEventUserRequest {
+public class UpdateEventUserRequest implements UpdateEvent {
 
     @Size(min = 20,max = 2000)
     private String annotation;

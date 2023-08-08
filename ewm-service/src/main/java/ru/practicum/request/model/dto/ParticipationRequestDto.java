@@ -1,9 +1,12 @@
 package ru.practicum.request.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ParticipationRequestDto {
 
