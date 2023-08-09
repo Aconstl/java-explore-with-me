@@ -38,7 +38,6 @@ CREATE TABLE IF NOT EXISTS public.events
     request_moderation BOOLEAN,
     title              VARCHAR(255),
     state              VARCHAR,
-    views  			   BIGINT,
     published_on       TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT pk_events PRIMARY KEY (event_id),
     CONSTRAINT events_initiator_FK FOREIGN KEY (initiator_id) REFERENCES Public.users(user_id),

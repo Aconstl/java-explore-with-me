@@ -16,13 +16,11 @@ public class EventShortDto {
     private UserShortDto initiator;
     private String annotation;
     private CategoryDto category;
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String eventDate;
-
     private Long confirmedRequests;
     private Boolean paid;
     private String title;
-    private Long views;
+    private Integer views;
 
 }

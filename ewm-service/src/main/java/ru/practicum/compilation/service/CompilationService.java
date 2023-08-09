@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.Pagination;
+import ru.practicum.StatisticPort;
 import ru.practicum.compilation.model.*;
 import ru.practicum.compilation.repository.CompilationRepository;
 import ru.practicum.customException.model.NotFoundException;
@@ -21,13 +22,14 @@ public class CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
+    private final StatisticPort stats;
 
     public CompilationDto createCompilation(NewCompilationDto newCompilation) {
         List<Event> eventList = eventRepository.findAllByIdIn(newCompilation.getEvents() != null ?
         newCompilation.getEvents() : new ArrayList<>());
 
         Compilation compilation = compilationRepository.save(CompilationMapper.fromNewDto(newCompilation,eventList));
-        return CompilationMapper.toDto(compilation,requestRepository);
+        return CompilationMapper.toDto(compilation,requestRepository,stats);
     }
 
     public void deleteCompilation(Long compId) {
@@ -54,7 +56,7 @@ public class CompilationService {
             List<Event> eventList = eventRepository.findAllByIdIn(updateCompilation.getEvents());
             compilation.setEvents(eventList);
         }
-        return CompilationMapper.toDto(compilationRepository.save(compilation),requestRepository);
+        return CompilationMapper.toDto(compilationRepository.save(compilation),requestRepository,stats);
 
     }
 
@@ -64,7 +66,7 @@ public class CompilationService {
                 compilationRepository.findAll(pageable).getContent() :
                 compilationRepository.findAllByPinned(pinned,pageable);
 
-        return CompilationMapper.toListDto(compilations,requestRepository);
+        return CompilationMapper.toListDto(compilations,requestRepository,stats);
     }
 
     public CompilationDto getCompilation(Long compId) {
@@ -72,7 +74,7 @@ public class CompilationService {
                 //Подборка не найдена - 404;
                 () -> new NotFoundException("Подборка не найдена")
         );
-        return CompilationMapper.toDto(compilation,requestRepository);
+        return CompilationMapper.toDto(compilation,requestRepository,stats);
     }
 
 }

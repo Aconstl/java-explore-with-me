@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.customException.model.BadRequestException;
 import ru.practicum.event.model.dto.UpdateEventUserRequest;
 import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.model.dto.EventShortDto;

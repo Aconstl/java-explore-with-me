@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.client.HitClient;
 import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.model.dto.EventShortDto;
 import ru.practicum.event.model.SortEvent;
 import ru.practicum.event.service.EventService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +23,7 @@ import java.util.Set;
 public class PublicEventController {
 
     private final EventService eventService;
+    private final HitClient stats;
 
     @GetMapping
     public List<EventShortDto> getEventWithFilter(
@@ -32,15 +35,19 @@ public class PublicEventController {
             @RequestParam(defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(required = false) SortEvent sort,
             @RequestParam(defaultValue = "0") Long from,
-            @RequestParam(defaultValue = "10") Long size
+            @RequestParam(defaultValue = "10") Long size,
+            HttpServletRequest request
             ) {
         log.info("Public: События (Получение событий с возможностью фильтрации)");
+        stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
         return eventService.getEventWithFilter(text,categories,paid,rangeStart,rangeEnd,onlyAvailable,sort,from,size);
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getEventById(@PathVariable Long id) {
+    public EventFullDto getEventById(@PathVariable Long id,
+                                     HttpServletRequest request) {
         log.info("Public: События (Получение подробной информации об опубикованном событии по его идентификатору)");
+        stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
         return eventService.getEventById(id);
     }
 

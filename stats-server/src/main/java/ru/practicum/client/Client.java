@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Client {
 
-    private final RestTemplate rest;
+    protected final RestTemplate rest;
 
     public Client(RestTemplate rest) {
         this.rest = rest;

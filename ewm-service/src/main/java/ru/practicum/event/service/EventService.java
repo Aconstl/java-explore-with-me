@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.Pagination;
+import ru.practicum.StatisticPort;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.customException.model.BadRequestException;
@@ -40,6 +41,8 @@ public class EventService {
 
     private final RequestRepository requestRepository;
 
+    private final StatisticPort stats;
+
     //PUBLIC
     public List<EventShortDto>  getEventWithFilter(String text,
                                                    Set<Long> categories,
@@ -69,7 +72,7 @@ public class EventService {
         } else {
             events = eventRepository.getEventsByParam(text, categories, paid, rangeStart, rangeEnd, pageable);
         }
-        return EventMapper.toListShortDto(events,requestRepository);
+        return EventMapper.toListShortDto(events,requestRepository,stats);
     }
 
     public EventFullDto getEventById(Long id) {
@@ -81,7 +84,7 @@ public class EventService {
                 //Недоступнос - 404
                 throw new NotFoundException("Событие еще не опубликовано");
             }
-            return EventMapper.toFullDto(event,requestRepository);
+            return EventMapper.toFullDto(event,requestRepository,stats);
         } else {
             //Не корректно - 400
             throw new BadRequestException("id категории указан неккоректно");
@@ -92,7 +95,7 @@ public class EventService {
     public List<EventShortDto> getUserEvents(Long id, Long from, Long size) {
         Pageable pageable = Pagination.setPageable(from,size);
         List<Event> eventList = eventRepository.findByInitiatorId(id,pageable);
-        return EventMapper.toListShortDto(eventList,requestRepository);
+        return EventMapper.toListShortDto(eventList,requestRepository,stats);
     }
 
     @Transactional
@@ -123,11 +126,10 @@ public class EventService {
             event.setRequestModeration(newEvent.getRequestModeration() != null ? newEvent.getRequestModeration() : true);
             event.setTitle(newEvent.getTitle());
             event.setState(State.PENDING);
-            event.setViews(0L);
             event.setPublishedOn(null);
 
          event = eventRepository.save(event);
-        return EventMapper.toFullDto(event,requestRepository);
+        return EventMapper.toFullDto(event,requestRepository,stats);
     }
 
     public EventFullDto getUserEvent(Long userId, Long eventId) {
@@ -135,7 +137,7 @@ public class EventService {
                 //Не найден - 404
                 .orElseThrow(() -> new NotFoundException("События с указаным id не существует"));
 
-        return EventMapper.toFullDto(event,requestRepository);
+        return EventMapper.toFullDto(event,requestRepository,stats);
     }
 
     @Transactional
@@ -163,7 +165,7 @@ public class EventService {
         }
 
         Event req = eventRepository.saveAndFlush(event);
-        return EventMapper.toFullDto(req,requestRepository);
+        return EventMapper.toFullDto(req,requestRepository,stats);
     }
 
     public List<ParticipationRequestDto> getRequestsInUserEvent(Long userId, Long eventId) {
@@ -228,7 +230,7 @@ public class EventService {
         List<Event> events = eventRepository.getEventFilterForAdmin(userIds,states,
                 categoryIds,rangeStart,rangeEnd,pageable);
 
-        return EventMapper.toListFulDto(events,requestRepository);
+        return EventMapper.toListFulDto(events,requestRepository,stats);
 
     //    throw new UnsupportedOperationException("Не реализован");
     }
@@ -262,7 +264,7 @@ public class EventService {
         }
 
         Event req = eventRepository.saveAndFlush(event);
-        return EventMapper.toFullDto(req,requestRepository);
+        return EventMapper.toFullDto(req,requestRepository,stats);
     }
 
     private Event updateParamEvent(Event event, UpdateEvent updEvent, int time) {
