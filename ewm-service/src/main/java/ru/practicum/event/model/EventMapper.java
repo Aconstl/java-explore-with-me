@@ -17,12 +17,12 @@ public class EventMapper {
 
     public static EventShortDto toShortDto(Event event, RequestRepository requestRepository, StatisticPort stats) {
         return EventShortDto.builder()
-                .annotation(event.getAnnotation())
-                .category(CategoryMapper.toDto(event.getCategory()))
-                .confirmedRequests((long) requestRepository.findAllByEventIdAndStatus(event.getId(), Status.CONFIRMED).size())
-                .eventDate(event.getEventDate().toString())
                 .id(event.getId())
                 .initiator(UserMapper.toShortDto(event.getInitiator()))
+                .annotation(event.getAnnotation())
+                .category(CategoryMapper.toDto(event.getCategory()))
+                .eventDate(event.getEventDate())
+                .confirmedRequests((long) requestRepository.findAllByEventIdAndStatus(event.getId(), Status.CONFIRMED).size())
                 .paid(event.getPaid())
                 .title(event.getTitle())
               //  .views(stats.getAmountOfViews(event.getPublishedOn(),
@@ -41,20 +41,21 @@ public class EventMapper {
 
     public static EventFullDto toFullDto(Event event, RequestRepository requestRepository,StatisticPort stats) {
         return EventFullDto.builder()
-                .annotation(event.getAnnotation())
-                .category(CategoryMapper.toDto(event.getCategory()))
-                .confirmedRequests((long) requestRepository.findAllByEventIdAndStatus(event.getId(), Status.CONFIRMED).size())
-                .createdOn(event.getCreatedOn().toString())
-                .description(event.getDescription())
-                 .eventDate(event.getEventDate().toString())
                 .id(event.getId())
                 .initiator(UserMapper.toShortDto(event.getInitiator()))
+                .annotation(event.getAnnotation())
+                .category(CategoryMapper.toDto(event.getCategory()))
+                .description(event.getDescription())
+                .createdOn(event.getCreatedOn())
+                .eventDate(event.getEventDate())
+                .location(event.getLocation())
                 .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
-                .publishedOn(event.getPublishedOn() != null ? event.getPublishedOn().toString() : null)
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .title(event.getTitle())
+                .confirmedRequests((long) requestRepository.findAllByEventIdAndStatus(event.getId(), Status.CONFIRMED).size())
+                .publishedOn(event.getPublishedOn() != null ? event.getPublishedOn() : null)
               //  .views(stats.getAmountOfViews(event.getPublishedOn(),
               //          new String[]{String.format("/events/%d",event.getId())}))
                 .views(0) //ВРЕМЕННО

@@ -48,7 +48,7 @@ public class RequestService {
                 .orElseThrow(() -> new NotFoundException("Событие с указаным id не найдено"));
 
         //нельзя добавить повторный запрос (Ожидается код ошибки 409)
-        if (requestRepository.findByRequesterIdAndId(userId, eventId).isPresent()) {
+        if (requestRepository.findByRequesterIdAndEventId(userId, eventId).isPresent()) {
             throw new ConflictException("Повторно запрос создать запрещено");
         }
 
@@ -96,9 +96,10 @@ public class RequestService {
         EventRequest request = requestRepository.findByRequesterIdAndId(userId,requestId).orElseThrow(
                 () -> new NotFoundException("Запроса с такими параметрами не существует")
         );
-        request.setStatus(Status.REJECTED);
+        request.setStatus(Status.CANCELED);
 
-        request = requestRepository.changeStatusRequest(userId,requestId,request.getStatus().toString()).get();
+        request = requestRepository.saveAndFlush(request);
+     //   request = requestRepository.changeStatusRequest(userId,requestId,request.getStatus().toString()).get();
         return RequestMapper.toDto(request);
     }
 }

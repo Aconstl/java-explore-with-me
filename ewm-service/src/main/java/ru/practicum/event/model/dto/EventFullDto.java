@@ -7,6 +7,8 @@ import ru.practicum.event.model.Location;
 import ru.practicum.event.model.State;
 import ru.practicum.user.model.UserShortDto;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,9 +22,9 @@ public class EventFullDto {
     private CategoryDto category;
     private String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String createdOn;
+    private LocalDateTime createdOn;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String eventDate;
+    private LocalDateTime eventDate;
     private Location location;
     private Boolean paid;
     private Long participantLimit;
@@ -31,6 +33,6 @@ public class EventFullDto {
     private String title;
     private Long confirmedRequests;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String publishedOn;
+    private LocalDateTime publishedOn;
     private Integer views;
 }

@@ -18,6 +18,8 @@ public interface RequestRepository extends JpaRepository<EventRequest,Long> {
 
     Optional<EventRequest> findByRequesterIdAndId(Long requesterId, Long id);
 
+    Optional<EventRequest> findByRequesterIdAndEventId(Long requesterId, Long eventId);
+
     @Modifying(clearAutomatically = true,flushAutomatically = true)
     @Query(value = "UPDATE PUBLIC.Event_Requests " +
             "SET status = :status " +

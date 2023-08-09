@@ -33,14 +33,15 @@ public class RequestController {
             @PathVariable Long userId,
             @RequestParam Long eventId
     ) {
-        log.info("Private: Запросы на участие (Добавление запроса от текущего пользователя на участие в событии)");
+        log.info("Private: Запросы на участие (Добавление запроса от текущего пользователя на участие в событии)" +
+                "userId: {}, eventId: {}", userId, eventId);
         ParticipationRequestDto requestDto = requestService.createRequest(userId,eventId);
         log.info("Private: Запрос на участие добавлен");
         return requestDto;
       //  return requestService.createRequest(userId,eventId);
     }
 
-    @PostMapping("/{requestId}/cancel")
+    @PatchMapping("/{requestId}/cancel")
     public ParticipationRequestDto cancelRequest(
             @PathVariable Long userId,
             @PathVariable Long requestId
