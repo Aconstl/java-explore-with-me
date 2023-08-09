@@ -74,5 +74,17 @@ public interface EventRepository extends JpaRepository<Event,Long> {
                                        @Param("rangeEnd") LocalDateTime rangeEnd,
                                           Pageable pageable);
 
+    @Query(value = "select e.event_date " +
+            "from events e " +
+            "order by e.event_date asc " +
+            "limit 1", nativeQuery = true)
+    LocalDateTime getOldEventTime();
+
+    @Query(value = "select e.event_date " +
+            "from events e " +
+            "order by e.event_date desc " +
+            "limit 1", nativeQuery = true)
+    LocalDateTime getNewEventTime();
+
     List<Event> findAllByIdIn(List<Long> events);
 }

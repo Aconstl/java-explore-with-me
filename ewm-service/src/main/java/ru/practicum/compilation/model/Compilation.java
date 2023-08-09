@@ -23,7 +23,7 @@ public class Compilation {
     private Long id;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "compilationEvents",
+    @JoinTable(name = "compilation_events",
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> events;

@@ -19,7 +19,7 @@ public class NewCompilationDto {
     @UniqueElements
     private List<Long> events;
 
-    private Boolean pinned;
+    private Boolean pinned = false;
 
     @NotBlank
     @Size(min = 1, max = 50)

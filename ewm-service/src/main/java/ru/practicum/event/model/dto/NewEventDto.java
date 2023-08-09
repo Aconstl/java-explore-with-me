@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.event.model.Location;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -30,10 +27,10 @@ public class NewEventDto {
     private LocalDateTime eventDate;
     @NotNull
     private Location location;
-    @NotNull
-    private Boolean paid;
-    private Long participantLimit;
-    private Boolean requestModeration;
+    private Boolean paid = false;
+    @PositiveOrZero
+    private Long participantLimit = 0L;
+    private Boolean requestModeration = true;
     @NotBlank
     @Size(min = 3, max = 120)
     private String title;

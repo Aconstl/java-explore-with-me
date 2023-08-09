@@ -46,6 +46,11 @@ public class CategoryService {
 
     //ADMIN
     public CategoryDto createCategory(NewCategoryDto newCategory) {
+        categoryRepository.findByName(newCategory.getName()).ifPresent((x) -> {
+                //нарушение целостности данных - 409
+                throw new ConflictException("Категория с таким именем уже существует");
+        });
+
        // categoryRepository.findByName(newCategory.getName()).isEmpty();
         Category category = new Category(newCategory.getName());
         category = categoryRepository.save(category);
@@ -80,10 +85,9 @@ public class CategoryService {
                 //Если не найден с данным id - 404
                 new NotFoundException("Категории с указанным id не существует"));
 
-        if (updCategory.getName() != null) {
-            category = (categoryRepository.updateCategoryName(updCategory.getName(),catId)).get();
-        }
+        if (updCategory.getName() != null) category.setName(updCategory.getName());
 
+        category = categoryRepository.saveAndFlush(category);
         return CategoryMapper.toDto(category);
     }
 }

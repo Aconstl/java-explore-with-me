@@ -53,9 +53,9 @@ public class EventService {
                                                    SortEvent sort,
                                                    Long from,
                                                    Long size) {
-        final LocalDateTime finalRangeStart = rangeStart != null ? rangeStart : LocalDateTime.now();
-        final LocalDateTime finalRangeEnd = rangeEnd != null ? rangeEnd : finalRangeStart.plusYears(1);
-        if (finalRangeStart.isAfter(finalRangeEnd)) {
+        if (rangeStart == null) rangeStart = eventRepository.getOldEventTime();
+        if (rangeEnd == null) rangeEnd = eventRepository.getNewEventTime();
+        if (rangeStart.isAfter(rangeEnd)) {
             throw new BadRequestException("Дата начала сортировки должна быть ранее конца сортировки");
         }
 
@@ -229,6 +229,8 @@ public class EventService {
                                         Long from,
                                         Long size
                                         ) {
+        if (rangeStart == null) rangeStart = eventRepository.getOldEventTime();
+        if (rangeEnd == null) rangeEnd = eventRepository.getNewEventTime();
         Pageable pageable = Pagination.setPageable(from,size);
         List<Event> events = eventRepository.getEventFilterForAdmin(userIds,states,
                 categoryIds,rangeStart,rangeEnd,pageable);

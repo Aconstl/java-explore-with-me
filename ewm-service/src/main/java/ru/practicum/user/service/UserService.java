@@ -24,7 +24,13 @@ public class UserService {
 
     public List<UserDto> getUsers(List<Long> ids, Long from, Long size) {
         Pageable pageable = Pagination.setPageable(from, size);
-        return userRepository.findByIdIn(ids,pageable).stream().map(UserMapper::toDto).collect(Collectors.toList());
+        List<User> users;
+        if (ids == null || ids.isEmpty()) {
+            users = userRepository.findAll(pageable).getContent();
+        } else {
+            users = userRepository.findByIdIn(ids,pageable);
+        }
+        return users.stream().map(UserMapper::toDto).collect(Collectors.toList());
     }
 
     public UserDto createUser(NewUserRequest newUser) {
