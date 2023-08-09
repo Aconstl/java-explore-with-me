@@ -24,8 +24,9 @@ public class EventMapper {
                 .initiator(UserMapper.toShortDto(event.getInitiator()))
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                .views(stats.getAmountOfViews(event.getPublishedOn(),
-                        new String[]{String.format("/events/%d",event.getId())}))
+              //  .views(stats.getAmountOfViews(event.getPublishedOn(),
+               //         new String[]{String.format("/events/%d",event.getId())}))
+                .views(0) //ВРЕМЕННО
                 .build();
     }
 
@@ -53,8 +54,9 @@ public class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .title(event.getTitle())
-                .views(stats.getAmountOfViews(event.getPublishedOn(),
-                        new String[]{String.format("/events/%d",event.getId())}))
+              //  .views(stats.getAmountOfViews(event.getPublishedOn(),
+              //          new String[]{String.format("/events/%d",event.getId())}))
+                .views(0) //ВРЕМЕННО
                 .build();
     }
 

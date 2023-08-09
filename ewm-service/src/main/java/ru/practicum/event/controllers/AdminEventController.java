@@ -11,6 +11,7 @@ import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.model.dto.UpdateEventAdminRequest;
 import ru.practicum.event.service.EventService;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.List;
@@ -42,7 +43,7 @@ public class AdminEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto updateAdminEvent(
             @PathVariable Long eventId,
-            @RequestBody UpdateEventAdminRequest updEventAdm
+            @RequestBody @Valid UpdateEventAdminRequest updEventAdm
             ) {
         log.info("Admin: События (Редактирование данных события и его статуса (отклонение/публикация)");
         EventFullDto eventFullDto = eventService.updateAdminEvent(eventId,updEventAdm);

@@ -2,6 +2,7 @@ package ru.practicum.event.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.model.dto.UpdateEventUserRequest;
@@ -39,13 +40,14 @@ public class PrivateEventController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto createEvent(
          @PathVariable Long userId,
          @RequestBody @Valid NewEventDto newEvent
     ) {
         log.info("Private: События (Добавление нового события)");
         EventFullDto eventFullDto = eventService.createEvent(userId, newEvent);
-        log.info("Private: События добавлено успешно ");
+        log.info("Private: Событие добавлено успешно ");
         return eventFullDto;
        // return eventService.createEvent(userId, newEvent);
     }

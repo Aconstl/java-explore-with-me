@@ -2,6 +2,7 @@ package ru.practicum.request.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.customException.model.ConflictException;
 import ru.practicum.customException.model.NotFoundException;
 import ru.practicum.event.model.Event;
@@ -39,6 +40,7 @@ public class RequestService {
         return RequestMapper.toListDto(requests);
     }
 
+    @Transactional
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
         User requester = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с указаным id не найден"));
@@ -72,9 +74,11 @@ public class RequestService {
             request.setCreated(LocalDateTime.now());
         //если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного
             if (event.getRequestModeration()) {
-                request.setStatus(Status.PENDING);
-            } else {
+              //  request.setStatus(Status.PENDING);
                 request.setStatus(Status.CONFIRMED);
+            } else {
+             //   request.setStatus(Status.CONFIRMED);
+                request.setStatus(Status.PENDING);
             }
 
         request = requestRepository.save(request);
@@ -82,6 +86,7 @@ public class RequestService {
         return RequestMapper.toDto(request);
     }
 
+    @Transactional
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
       //  User requester = userRepository.findById(userId)
       //          .orElseThrow(() -> new IllegalArgumentException("Пользователь с указаным id не найден"));

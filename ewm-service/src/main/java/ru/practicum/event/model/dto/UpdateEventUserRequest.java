@@ -7,6 +7,7 @@ import lombok.Setter;
 import ru.practicum.event.model.Location;
 import ru.practicum.event.model.StateUserAction;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -24,6 +25,7 @@ public class UpdateEventUserRequest implements UpdateEvent {
     private String description;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Future
     private LocalDateTime eventDate;
 
     private Location location;

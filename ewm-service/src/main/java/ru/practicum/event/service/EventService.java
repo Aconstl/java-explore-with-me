@@ -100,6 +100,7 @@ public class EventService {
 
     @Transactional
     public EventFullDto createEvent(Long userId, NewEventDto newEvent) {
+
         LocalDateTime actualPublicationTime = LocalDateTime.now().plusHours(2);
         if (newEvent.getEventDate().isBefore(actualPublicationTime)) {
             //Событие не удовлетворяет правилам создания  - 409
@@ -156,12 +157,14 @@ public class EventService {
 */
         event = updateParamEvent(event,updEvent,2);
 
-        if (updEvent.getStateAction().equals(StateUserAction.SEND_TO_REVIEW)) {  //stateAction
-            event.setState(State.PENDING);
-        } else if (updEvent.getStateAction().equals(StateUserAction.CANCEL_REVIEW)) {
-            event.setState(State.CANCELED);
-        } else {
-            throw new BadRequestException("Ошибка чтения изменения состояния события");
+        if (updEvent.getStateAction() != null) {
+            if (updEvent.getStateAction().equals(StateUserAction.SEND_TO_REVIEW)) {  //stateAction
+                event.setState(State.PENDING);
+            } else if (updEvent.getStateAction().equals(StateUserAction.CANCEL_REVIEW)) {
+                event.setState(State.CANCELED);
+            } else {
+                throw new BadRequestException("Ошибка чтения изменения состояния события");
+            }
         }
 
         Event req = eventRepository.saveAndFlush(event);

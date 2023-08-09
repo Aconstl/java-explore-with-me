@@ -2,6 +2,7 @@ package ru.practicum.compilation.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.compilation.model.CompilationDto;
@@ -21,12 +22,14 @@ public class AdminCompilationController {
     private final CompilationService compilationService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto createCompilation(@RequestBody @Valid NewCompilationDto newCompilation) {
         log.info("Admin: Подборка событий (Добавление новой подборки)");
         return compilationService.createCompilation(newCompilation);
     }
 
     @DeleteMapping("/{compId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCompilation(@PathVariable Long compId) {
         log.info("Admin: Подборка событий (Удаление подборки)");
         compilationService.deleteCompilation(compId);
