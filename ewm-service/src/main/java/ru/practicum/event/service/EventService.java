@@ -208,8 +208,9 @@ public class EventService {
                     //если лимит заявок исчерапн - остальные заявки отклоняются
                     r.setStatus(Status.REJECTED);
                 }
-                requestRepository.changeStatusRequest(r.getRequester().getId(),
-                        r.getId(), r.getStatus().toString());
+                requests = requestRepository.saveAll(requests);
+            //    requestRepository.changeStatusRequest(r.getRequester().getId(),
+            //            r.getId(), r.getStatus().toString());
             }
         }
         List<EventRequest> confirmedRequests = requestRepository

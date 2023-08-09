@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.Pagination;
+import ru.practicum.customException.model.ConflictException;
 import ru.practicum.customException.model.NotFoundException;
 import ru.practicum.user.model.NewUserRequest;
 import ru.practicum.user.model.User;
@@ -34,6 +35,10 @@ public class UserService {
     }
 
     public UserDto createUser(NewUserRequest newUser) {
+        userRepository.findByEmail(newUser.getEmail()).ifPresent((x) -> {
+            //нарушение целостности данных - 409
+            throw new ConflictException("Пользователь с такой электронной почтой уже существует");
+        });
         User user = userRepository.save(UserMapper.fromCreateUser(newUser));
         return UserMapper.toDto(user);
     }

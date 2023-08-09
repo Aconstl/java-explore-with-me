@@ -5,6 +5,7 @@ import ru.practicum.StatisticPort;
 import ru.practicum.category.model.CategoryMapper;
 import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.model.dto.EventShortDto;
+import ru.practicum.request.model.Status;
 import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.user.model.UserMapper;
 
@@ -18,7 +19,7 @@ public class EventMapper {
         return EventShortDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
-                .confirmedRequests((long) requestRepository.findAllByEventId(event.getId()).size())
+                .confirmedRequests((long) requestRepository.findAllByEventIdAndStatus(event.getId(), Status.CONFIRMED).size())
                 .eventDate(event.getEventDate().toString())
                 .id(event.getId())
                 .initiator(UserMapper.toShortDto(event.getInitiator()))
@@ -42,7 +43,7 @@ public class EventMapper {
         return EventFullDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
-                .confirmedRequests((long) requestRepository.findAllByEventId(event.getId()).size())
+                .confirmedRequests((long) requestRepository.findAllByEventIdAndStatus(event.getId(), Status.CONFIRMED).size())
                 .createdOn(event.getCreatedOn().toString())
                 .description(event.getDescription())
                  .eventDate(event.getEventDate().toString())

@@ -63,17 +63,19 @@ public class RequestService {
         }
 
         //если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
-        List<EventRequest> requests = requestRepository.findAllByEventId(eventId);
+        List<EventRequest> requests = requestRepository.findAllByEventIdAndStatus(eventId,Status.CONFIRMED);
+       // List<EventRequest> requests = requestRepository.findAllByEventId(eventId);
         if (event.getParticipantLimit() != 0 && event.getParticipantLimit() <= requests.size()) {
             throw new ConflictException("Достигнут лимит запросов на участие");
         }
+
 
         EventRequest request = new EventRequest();
             request.setRequester(requester);
             request.setEvent(event);
             request.setCreated(LocalDateTime.now());
         //если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного
-            if (event.getRequestModeration()) {
+            if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
               //  request.setStatus(Status.PENDING);
                 request.setStatus(Status.CONFIRMED);
             } else {

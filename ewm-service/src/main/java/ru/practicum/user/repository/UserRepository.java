@@ -6,12 +6,20 @@ import org.springframework.data.jpa.repository.Query;
 import ru.practicum.user.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {
-
-    @Query("select u from User u where ?1 is null or u.id in ?1")
+/*
+    @Query("select u " +
+            "from User u " +
+            "where ?1 is null or u.id in ?1")
     List<User> findByIdIn(List<Long> ids, Pageable pageable);
+    */
+@Query("select u " +
+        "from User u " +
+        "where u.id in ?1")
+List<User> findByIdIn(List<Long> ids, Pageable pageable);
 
-
+    Optional<User> findByEmail(String email);
 }
