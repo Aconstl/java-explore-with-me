@@ -40,7 +40,7 @@ public class PublicEventController {
             HttpServletRequest request
             ) {
         log.info("Public: События (Получение событий с возможностью фильтрации)");
-    //    stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
+        stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
         return eventService.getEventWithFilter(text,categories,paid,rangeStart,rangeEnd,onlyAvailable,sort,from,size);
     }
 
@@ -48,7 +48,7 @@ public class PublicEventController {
     public EventFullDto getEventById(@PathVariable Long id,
                                      HttpServletRequest request) {
         log.info("Public: События (Получение подробной информации об опубикованном событии по его идентификатору)");
-     //   stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
+        stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
         return eventService.getEventById(id);
     }
 

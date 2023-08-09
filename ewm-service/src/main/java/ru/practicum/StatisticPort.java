@@ -3,13 +3,10 @@ package ru.practicum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.client.StatsClient;
-import ru.practicum.customException.model.BadRequestException;
-import ru.practicum.model.StatDtoOut;
+
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 @RequiredArgsConstructor
 @Component
