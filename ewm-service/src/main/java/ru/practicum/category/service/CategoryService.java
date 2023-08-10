@@ -75,7 +75,7 @@ public class CategoryService {
 
     public CategoryDto patchCategory(NewCategoryDto updCategory, Long catId) {
         categoryRepository.findByName(updCategory.getName()).ifPresent((x) -> {
-            if (x.getId() != catId) {
+            if (x.getId().equals(catId)) {
                 //нарушение целостности данных - 409
                 throw new ConflictException("Категория с таким именем уже существует");
             }

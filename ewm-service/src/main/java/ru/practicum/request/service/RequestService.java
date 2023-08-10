@@ -53,7 +53,7 @@ public class RequestService {
         }
 
         //инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
-        if (event.getInitiator().getId() == requester.getId()) {
+        if (event.getInitiator().getId().equals(requester.getId())) {
             throw new ConflictException("Пользователь не может оставлять заявку на собственное событие");
         }
 
