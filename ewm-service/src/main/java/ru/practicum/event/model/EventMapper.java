@@ -1,7 +1,7 @@
 package ru.practicum.event.model;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.StatisticPort;
+import ru.practicum.port.StatisticPort;
 import ru.practicum.category.model.CategoryMapper;
 import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.model.dto.EventShortDto;

@@ -1,7 +1,7 @@
 package ru.practicum.compilation.model;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.StatisticPort;
+import ru.practicum.port.StatisticPort;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventMapper;
 import ru.practicum.request.repository.RequestRepository;

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.Pagination;
-import ru.practicum.StatisticPort;
+import ru.practicum.port.StatisticPort;
 import ru.practicum.compilation.model.*;
 import ru.practicum.compilation.repository.CompilationRepository;
 import ru.practicum.customException.model.NotFoundException;
