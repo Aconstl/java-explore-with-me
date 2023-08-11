@@ -2,6 +2,7 @@ package ru.practicum.server;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.model.HitDto;
 import ru.practicum.model.Stat;
@@ -14,6 +15,7 @@ import java.util.List;
 @Service
 @Validated
 @RequiredArgsConstructor
+@Transactional
 public class StatService {
 
     private final StatRepository repository;
@@ -23,6 +25,7 @@ public class StatService {
         repository.save(stat);
     }
 
+    @Transactional(readOnly = true)
     public List<StatDtoOut> getStats(LocalDateTime start,LocalDateTime end,String[] uris, boolean unique) {
        if (uris == null || uris.length == 0) {
            if (unique) {

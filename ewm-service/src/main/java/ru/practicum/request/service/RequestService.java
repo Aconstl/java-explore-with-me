@@ -21,6 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RequestService {
 
     private final RequestRepository requestRepository;
@@ -29,6 +30,7 @@ public class RequestService {
 
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getUserRequest(Long userId) {
   //      if (userId != null) {
             User requester = userRepository.findById(userId)
@@ -40,7 +42,6 @@ public class RequestService {
         return RequestMapper.toListDto(requests);
     }
 
-    @Transactional
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
         User requester = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с указаным id не найден"));

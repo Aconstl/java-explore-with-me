@@ -3,6 +3,7 @@ package ru.practicum.compilation.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.Pagination;
 import ru.practicum.port.StatisticPort;
 import ru.practicum.compilation.model.*;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class CompilationService {
 
     private final CompilationRepository compilationRepository;
@@ -60,6 +62,7 @@ public class CompilationService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<CompilationDto> getAllWithFilter(Boolean pinned, Long from, Long size) {
         Pageable pageable = Pagination.setPageable(from,size);
         List<Compilation> compilations = (pinned == null) ?
@@ -69,6 +72,7 @@ public class CompilationService {
         return CompilationMapper.toListDto(compilations,requestRepository,stats);
     }
 
+    @Transactional(readOnly = true)
     public CompilationDto getCompilation(Long compId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(
                 //Подборка не найдена - 404;

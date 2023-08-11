@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -44,6 +45,7 @@ public class EventService {
     private final StatisticPort stats;
 
     //PUBLIC
+    @Transactional(readOnly = true)
     public List<EventShortDto>  getEventWithFilter(String text,
                                                    Set<Long> categories,
                                                    Boolean paid,
@@ -75,6 +77,7 @@ public class EventService {
         return EventMapper.toListShortDto(events,requestRepository,stats);
     }
 
+    @Transactional(readOnly = true)
     public EventFullDto getEventById(Long id) {
         if (id != null) {
             Event event = eventRepository.findById(id)
@@ -92,13 +95,14 @@ public class EventService {
     }
 
     //PRIVATE
+    @Transactional(readOnly = true)
     public List<EventShortDto> getUserEvents(Long id, Long from, Long size) {
         Pageable pageable = Pagination.setPageable(from,size);
         List<Event> eventList = eventRepository.findByInitiatorId(id,pageable);
         return EventMapper.toListShortDto(eventList,requestRepository,stats);
     }
 
-    @Transactional
+
     public EventFullDto createEvent(Long userId, NewEventDto newEvent) {
 
         LocalDateTime actualPublicationTime = LocalDateTime.now().plusHours(2);
@@ -133,6 +137,7 @@ public class EventService {
         return EventMapper.toFullDto(event,requestRepository,null);
     }
 
+    @Transactional(readOnly = true)
     public EventFullDto getUserEvent(Long userId, Long eventId) {
         Event event = eventRepository.findByInitiatorIdAndId(userId,eventId)
                 //Не найден - 404
@@ -141,7 +146,6 @@ public class EventService {
         return EventMapper.toFullDto(event,requestRepository,stats);
     }
 
-    @Transactional
     public EventFullDto updateEvent(Long userId, Long eventId, UpdateEventUserRequest updEvent) {
         Event event = eventRepository.findByInitiatorIdAndId(userId,eventId)
                 //Не найден - 404
@@ -171,6 +175,7 @@ public class EventService {
         return EventMapper.toFullDto(req,requestRepository,stats);
     }
 
+    @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getRequestsInUserEvent(Long userId, Long eventId) {
         Event event = eventRepository.findByInitiatorIdAndId(userId,eventId)
                 //Не найден - 404
@@ -179,7 +184,6 @@ public class EventService {
         return RequestMapper.toListDto(requests);
     }
 
-    @Transactional
     public EventRequestStatusUpdateResult changeStatusEvent(Long userId, Long eventId,
                                                             EventRequestStatusUpdateRequest statusUpdateRequest) {
         Event event = eventRepository.findByInitiatorIdAndId(userId,eventId)
@@ -222,6 +226,7 @@ public class EventService {
     }
 
     //ADMIN
+    @Transactional(readOnly = true)
     public List<EventFullDto> getEvents(Set<Long> userIds,
                                         Set<State> states,
                                         Set<Long> categoryIds,
@@ -241,7 +246,6 @@ public class EventService {
     //    throw new UnsupportedOperationException("Не реализован");
     }
 
-    @Transactional
     public EventFullDto updateAdminEvent(Long eventId, UpdateEventAdminRequest updEventAdm) {
         Event event = eventRepository.findById(eventId)
                 //Не найден - 404

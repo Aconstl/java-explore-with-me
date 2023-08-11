@@ -49,7 +49,9 @@ public class PublicEventController {
                                      HttpServletRequest request) {
         log.info("Public: События (Получение подробной информации об опубикованном событии по его идентификатору)");
         stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
-        return eventService.getEventById(id);
+        EventFullDto eventFullDto = eventService.getEventById(id);
+        log.info("Public: информация о событии получена");
+        return eventFullDto;
     }
 
 

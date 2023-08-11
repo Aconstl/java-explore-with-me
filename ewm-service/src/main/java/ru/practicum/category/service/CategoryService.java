@@ -2,6 +2,7 @@ package ru.practicum.category.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.Pagination;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.model.CategoryDto;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -26,12 +28,14 @@ public class CategoryService {
     private final EventRepository eventRepository;
 
     //PUBLIC
+    @Transactional(readOnly = true)
     public List<CategoryDto> getCategories(Long from, Long size) {
         Pageable pageable = Pagination.setPageable(from,size);
         List<Category> listCategories = categoryRepository.findAll(pageable).getContent();
         return CategoryMapper.toListDto(listCategories);
     }
 
+    @Transactional(readOnly = true)
     public CategoryDto getCategory(Long catId) {
         if (catId != null) {
             Category category = categoryRepository.findById(catId)
