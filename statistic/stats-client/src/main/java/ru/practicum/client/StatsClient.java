@@ -28,14 +28,14 @@ public class StatsClient extends Client {
                 .build());
     }
 
-    public List<StatDtoOut> getHits(LocalDateTime start, LocalDateTime end, String[] uris, Boolean unique) {
+    public List<StatDtoOut> getHits(String start, String end, String[] uris, Boolean unique) {
         Map<String,Object> parameters = Map.of(
                 "start", start,
                 "end", end,
                 "uris", uris,
                 "unique",unique
         );
-        String path = API_PREFIX + "?start={start}&end={end}&uris={uris}&unique={unique}";
+        String path = "?start={start}&end={end}&uris={uris}&unique={unique}";
         ResponseEntity<List<StatDtoOut>> serverResponse = rest.exchange(path, HttpMethod.GET, null,
                 new ParameterizedTypeReference<>() {}, parameters);
         return serverResponse.getBody();

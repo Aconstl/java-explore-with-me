@@ -53,7 +53,7 @@ public class EventService {
                                                    SortEvent sort,
                                                    Long from,
                                                    Long size) {
-        if (rangeStart == null) rangeStart = eventRepository.getOldEventTime();
+        if (rangeStart == null) rangeStart = LocalDateTime.now();
         if (rangeEnd == null) rangeEnd = eventRepository.getNewEventTime();
         if (rangeStart.isAfter(rangeEnd)) {
             throw new BadRequestException("Дата начала сортировки должна быть ранее конца сортировки");
@@ -130,7 +130,7 @@ public class EventService {
             event.setPublishedOn(null);
 
          event = eventRepository.save(event);
-        return EventMapper.toFullDto(event,requestRepository,stats);
+        return EventMapper.toFullDto(event,requestRepository,null);
     }
 
     public EventFullDto getUserEvent(Long userId, Long eventId) {

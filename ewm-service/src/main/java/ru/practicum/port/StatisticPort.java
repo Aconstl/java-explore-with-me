@@ -3,9 +3,12 @@ package ru.practicum.port;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.client.StatsClient;
+import ru.practicum.model.StatDtoOut;
 
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -14,13 +17,15 @@ public class StatisticPort {
 
     private final StatsClient statsClient;
 
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public int getAmountOfViews(LocalDateTime eventPublishedOn, String[] uri) {
-        return statsClient.getHits(
-                        eventPublishedOn,
-                        LocalDateTime.now(),
+        List<StatDtoOut> views =  statsClient.getHits(
+                        eventPublishedOn != null ? eventPublishedOn.format(formatter) : LocalDateTime.now().format(formatter), //?
+                        LocalDateTime.now().format(formatter),
                         uri,
                         true
-                        ).size();
+                        );
+        return views != null ? views.size() : 0;
     }
 /*
     public Map<Long, Long> getMapOfViews(LocalDateTime eventPublishedOn, String[] uri) {

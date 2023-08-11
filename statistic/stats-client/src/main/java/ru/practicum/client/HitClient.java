@@ -24,9 +24,9 @@ public class HitClient extends Client {
                 .build());
     }
 
-    public ResponseEntity<Object> newHit(String app, String uri, String ip, LocalDateTime timestamp) {
+    public void newHit(String app, String uri, String ip, LocalDateTime timestamp) {
         HitDto hitDto = new HitDto(app,uri,ip,timestamp);
-        return post("", hitDto);
+        post("", hitDto);
     }
 
 }
