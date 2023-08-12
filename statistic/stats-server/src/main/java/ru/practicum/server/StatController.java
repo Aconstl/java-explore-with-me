@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.customException.model.BadRequestException;
 import ru.practicum.model.HitDto;
 import ru.practicum.model.StatDtoOut;
 
@@ -39,7 +40,7 @@ public class StatController {
             ) {
         log.info("получение статистики по посещениям");
         if (start.isAfter(end)) {
-            throw new IllegalArgumentException("Ошибка валидации: конец выборки назначен раньше начала");
+            throw new BadRequestException("Ошибка валидации: конец выборки назначен раньше начала");
         }
         return service.getStats(start,end,uris,unique);
     }
