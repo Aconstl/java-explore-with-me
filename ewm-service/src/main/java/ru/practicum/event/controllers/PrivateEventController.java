@@ -32,11 +32,10 @@ public class PrivateEventController {
         @RequestParam(defaultValue = "0") Long from,
         @RequestParam(defaultValue = "10") Long size
     ) {
-        log.info("Private: События (Получение событий, добавленных текущим пользователем)");
+        log.info("Private: События (Получение событий, добавленных пользователем с id {})", userId);
         List<EventShortDto> events = eventService.getUserEvents(userId,from,size);
-        log.info("Private: События пользователя получены успешно");
+        log.info("Private: События пользователя с id {} получены успешно", userId);
         return events;
-       // return eventService.getUserEvents(userId,from,size);
     }
 
     @PostMapping
@@ -45,11 +44,10 @@ public class PrivateEventController {
          @PathVariable Long userId,
          @RequestBody @Valid NewEventDto newEvent
     ) {
-        log.info("Private: События (Добавление нового события)");
+        log.info("Private: События (Добавление нового события пользователем с id {})", userId);
         EventFullDto eventFullDto = eventService.createEvent(userId, newEvent);
-        log.info("Private: Событие добавлено успешно ");
+        log.info("Private: Событие добавлено успешно пользователем с id {}", userId);
         return eventFullDto;
-       // return eventService.createEvent(userId, newEvent);
     }
 
     @GetMapping("/{eventId}")
@@ -57,7 +55,7 @@ public class PrivateEventController {
             @PathVariable Long userId,
             @PathVariable Long eventId
     ) {
-        log.info("Private: События (Получение полной информации о событии добавленном текущим пользователем)");
+        log.info("Private: События (Получение полной информации о событии под id {} добавленным пользователем с id {})", eventId,userId);
         return eventService.getUserEvent(userId,eventId);
     }
 
@@ -67,11 +65,10 @@ public class PrivateEventController {
             @PathVariable Long eventId,
             @RequestBody @Valid UpdateEventUserRequest updateEvent
     ) {
-        log.info("Private: События (Изменение события добавленного текущим пользователем)");
+        log.info("Private: События (Изменение события c id {} добавленного пользователем с id {})", eventId,userId);
         EventFullDto eventFullDto = eventService.updateEvent(userId,eventId, updateEvent);
-        log.info("Private: Изменения события пользователем выполнено");
+        log.info("Private: Изменения события № {} пользователем c id {} выполнено успешно", eventId,userId);
         return eventFullDto;
-       // return eventService.updateEvent(userId,eventId, updateEvent);
     }
 
     @PatchMapping("/{eventId}/requests")
@@ -80,11 +77,10 @@ public class PrivateEventController {
             @PathVariable Long eventId,
             @RequestBody @Valid EventRequestStatusUpdateRequest statusUpdateRequest
     ) {
-        log.info("Private: События (Изменения статуса(подтверждена,отменена) заявок на участие в событии текущего пользователя");
+        log.info("Private: События (Изменения статуса(подтверждена,отменена) заявок на участие в событии № {} текущего пользователя с id {})",eventId,userId);
         EventRequestStatusUpdateResult result = eventService.changeStatusEvent(userId,eventId,statusUpdateRequest);
-        log.info("Изменение статусов заявок выполнено успешно");
+        log.info("Изменение статусов заявок события № {} выполнено успешно", eventId);
         return result;
-       // return eventService.changeStatusEvent(userId,eventId,statusUpdateRequest);
     }
 
     @GetMapping("/{eventId}/requests")
@@ -92,7 +88,7 @@ public class PrivateEventController {
             @PathVariable Long userId,
             @PathVariable Long eventId
             ) {
-        log.info("Private: События (Получение информации о запросах на участие в событии текущего пользователя)");
+        log.info("Private: События (Получение информации о запросах на участие в событии № {} текущего пользователя с id {})",eventId,userId);
         return eventService.getRequestsInUserEvent(userId,eventId);
     }
 

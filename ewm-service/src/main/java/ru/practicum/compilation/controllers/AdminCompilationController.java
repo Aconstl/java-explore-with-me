@@ -31,15 +31,18 @@ public class AdminCompilationController {
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCompilation(@PathVariable Long compId) {
-        log.info("Admin: Подборка событий (Удаление подборки)");
+        log.info("Admin: Подборка событий (Удаление подборки c id {})", compId);
         compilationService.deleteCompilation(compId);
+        log.info("Admin: Подборка событий c id {} удалена)", compId);
     }
 
     @PatchMapping("/{compId}")
     public CompilationDto updateCompilation(@PathVariable Long compId,
                                   @RequestBody @Valid UpdateCompilationRequest updCompilation) {
-        log.info("Admin: Подборка событий (Обновление подборки)");
-        return compilationService.updateCompilation(compId,updCompilation);
+        log.info("Admin: Подборка событий (Обновление подборки с id {})", compId);
+        CompilationDto compilationDto = compilationService.updateCompilation(compId,updCompilation);
+        log.info("Admin: Подборка с id {} обновлена", compId);
+        return compilationDto;
     }
 
 }

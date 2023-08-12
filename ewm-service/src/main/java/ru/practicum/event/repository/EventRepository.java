@@ -58,14 +58,11 @@ public interface EventRepository extends JpaRepository<Event,Long> {
 
     @Query("SELECT e " +
             "FROM Event e " +
-        //    "RIGHT JOIN  EventRequest r on e.id = r.event.id " +
             "WHERE (:users IS NULL OR e.initiator.id in :users)  " +
             "AND (:states IS NULL OR e.state in :states) " +
             "AND (:categories IS NULL OR e.category.id in :categories) " +
             "AND (e.eventDate >= :rangeStart) " +
             "AND (e.eventDate <= :rangeEnd) "// +
-        //    "GROUP BY e "// +
-         //   "HAVING count(r) < e.participantLimit"
     )
     List<Event> getEventFilterForAdmin(@Param("users") Set<Long> users,
                                        @Param("states") Set<State> states,

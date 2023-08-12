@@ -35,14 +35,17 @@ public class AdminUserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody @Valid NewUserRequest user) {
         log.info("Admin: Пользователи (Добавление нового пользователя)");
-        return userService.createUser(user);
+        UserDto userDto = userService.createUser(user);
+        log.info("Admin: Пользователь создан успешно");
+        return userDto;
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long userId) {
-        log.info("Admin: Пользователи (Удаление пользователя)");
+        log.info("Admin: Пользователи (Удаление пользователя с id {})", userId);
         userService.deleteUser(userId);
+        log.info("Admin: Пользователm с id {} удален", userId);
     }
 
 }

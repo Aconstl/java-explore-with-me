@@ -154,11 +154,6 @@ public class EventService {
             //Событие не удовлетворяет правилам редактирования - 409
             throw new ConflictException("Нельзя изменить опубликованное событие");
         }
-/*
-        if (updEvent == null) {
-            return EventMapper.toFullDto(event, requestRepository);
-        }
-*/
         event = updateParamEvent(event,updEvent,2);
 
         if (updEvent.getStateAction() != null) {

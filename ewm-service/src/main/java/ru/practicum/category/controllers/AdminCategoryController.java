@@ -27,21 +27,23 @@ public class AdminCategoryController {
         CategoryDto categoryDto = categoryService.createCategory(category);
         log.info("Admin: Категория создана успешно");
         return categoryDto;
-        //return categoryService.createCategory(category);
     }
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable Long catId) {
-        log.info("Admin: Категории (Удаление категории)");
+        log.info("Admin: Категории (Удаление категории с id {})", catId);
         categoryService.deleteCategory(catId);
+        log.info("Admin: Категория с id {} удалена)", catId);
     }
 
     @PatchMapping("/{catId}")
     public CategoryDto updateCategory(@RequestBody @Valid NewCategoryDto category,
                                       @PathVariable Long catId) {
-        log.info("Admin: Категории (Обновление категории)");
-        return categoryService.patchCategory(category,catId);
+        log.info("Admin: Категории (Обновление категории с id {})", catId);
+        CategoryDto categoryDto = categoryService.patchCategory(category,catId);
+        log.info("Admin: Категория с id {} обновлена успешно)", catId);
+        return categoryDto;
     }
 
 }

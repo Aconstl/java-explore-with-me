@@ -32,7 +32,7 @@ public class PublicCompilationController {
     public CompilationDto getCompilation(
             @PathVariable Long compId
     ) {
-        log.info("Public: Подборка событий (Получение подборки событий по его id)");
+        log.info("Public: Подборка событий (Получение подборки событий по его id {})", compId);
         return compilationService.getCompilation(compId);
     }
 

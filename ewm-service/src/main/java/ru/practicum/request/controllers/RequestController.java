@@ -23,7 +23,7 @@ public class RequestController {
     public List<ParticipationRequestDto> getUserRequest(
             @PathVariable Long userId
     ) {
-        log.info("Private: Запросы на участие (Получение информации о заявках текущего пользователя на участие в чужих событиях)");
+        log.info("Private: Запросы на участие (Получение информации о заявках текущего пользователя c id {} на участие в чужих событиях)",userId);
         return requestService.getUserRequest(userId);
     }
 
@@ -33,12 +33,10 @@ public class RequestController {
             @PathVariable Long userId,
             @RequestParam Long eventId
     ) {
-        log.info("Private: Запросы на участие (Добавление запроса от текущего пользователя на участие в событии)" +
-                "userId: {}, eventId: {}", userId, eventId);
+        log.info("Private: Запросы на участие (Добавление запроса от текущего пользователя c id {} на участие в событии № {})", userId,eventId);
         ParticipationRequestDto requestDto = requestService.createRequest(userId,eventId);
-        log.info("Private: Запрос на участие добавлен");
+        log.info("Private: Запрос на участие в событии № {} пользователем c id {} добавлен", eventId,userId);
         return requestDto;
-      //  return requestService.createRequest(userId,eventId);
     }
 
     @PatchMapping("/{requestId}/cancel")
@@ -46,7 +44,9 @@ public class RequestController {
             @PathVariable Long userId,
             @PathVariable Long requestId
     ) {
-        log.info("Private: Запросы на участие (Отмена своего запроса на участие в событии)");
-        return requestService.cancelRequest(userId,requestId);
+        log.info("Private: Запросы на участие (Отмена своего запроса № {} пользователя c id {} на участие в событии )",requestId, userId);
+        ParticipationRequestDto requestDto = requestService.cancelRequest(userId,requestId);
+        log.info("Private: Запрос № {} пользователя c id {} на участие в событии отменен)",requestId, userId);
+        return requestDto;
     }
 }

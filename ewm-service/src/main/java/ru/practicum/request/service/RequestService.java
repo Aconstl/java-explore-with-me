@@ -32,12 +32,8 @@ public class RequestService {
 
     @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getUserRequest(Long userId) {
-  //      if (userId != null) {
-            User requester = userRepository.findById(userId)
+        userRepository.findById(userId)
                     .orElseThrow(() -> new NotFoundException("Пользователь с указаным id не найден"));
-  //      } else {
-   //         throw new BadRequestException("id Пользователя неккоретно");
-   //     }
         List<EventRequest> requests = requestRepository.findByRequesterId(userId);
         return RequestMapper.toListDto(requests);
     }
@@ -77,10 +73,8 @@ public class RequestService {
             request.setCreated(LocalDateTime.now());
         //если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного
             if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
-              //  request.setStatus(Status.PENDING);
                 request.setStatus(Status.CONFIRMED);
             } else {
-             //   request.setStatus(Status.CONFIRMED);
                 request.setStatus(Status.PENDING);
             }
 
@@ -91,16 +85,12 @@ public class RequestService {
 
     @Transactional
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
-      //  User requester = userRepository.findById(userId)
-      //          .orElseThrow(() -> new IllegalArgumentException("Пользователь с указаным id не найден"));
-
         EventRequest request = requestRepository.findByRequesterIdAndId(userId,requestId).orElseThrow(
                 () -> new NotFoundException("Запроса с такими параметрами не существует")
         );
         request.setStatus(Status.CANCELED);
 
         request = requestRepository.saveAndFlush(request);
-     //   request = requestRepository.changeStatusRequest(userId,requestId,request.getStatus().toString()).get();
         return RequestMapper.toDto(request);
     }
 }

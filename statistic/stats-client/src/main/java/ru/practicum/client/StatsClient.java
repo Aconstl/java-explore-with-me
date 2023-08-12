@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.model.StatDtoOut;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +38,5 @@ public class StatsClient extends Client {
         ResponseEntity<List<StatDtoOut>> serverResponse = rest.exchange(path, HttpMethod.GET, null,
                 new ParameterizedTypeReference<>() {}, parameters);
         return serverResponse.getBody();
-       // return get("",parameters);
     }
 }

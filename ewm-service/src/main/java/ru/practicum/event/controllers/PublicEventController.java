@@ -47,10 +47,10 @@ public class PublicEventController {
     @GetMapping("/{id}")
     public EventFullDto getEventById(@PathVariable Long id,
                                      HttpServletRequest request) {
-        log.info("Public: События (Получение подробной информации об опубикованном событии по его идентификатору)");
+        log.info("Public: События (Получение подробной информации об опубикованном событии по его идентификатору № {})", id);
         stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
         EventFullDto eventFullDto = eventService.getEventById(id);
-        log.info("Public: информация о событии получена");
+        log.info("Public: информация о событии № {} получена", id);
         return eventFullDto;
     }
 

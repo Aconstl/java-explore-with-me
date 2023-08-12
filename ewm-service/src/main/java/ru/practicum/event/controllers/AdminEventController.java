@@ -45,11 +45,10 @@ public class AdminEventController {
             @PathVariable Long eventId,
             @RequestBody @Valid UpdateEventAdminRequest updEventAdm
             ) {
-        log.info("Admin: События (Редактирование данных события и его статуса (отклонение/публикация)");
+        log.info("Admin: События (Редактирование данных события и его статуса (отклонение/публикация) c id {}", eventId);
         EventFullDto eventFullDto = eventService.updateAdminEvent(eventId,updEventAdm);
-        log.info("Admin: Событие отредактировано успешно");
+        log.info("Admin: Событие с id {} отредактировано успешно", eventId);
         return eventFullDto;
-       // return eventService.updateAdminEvent(eventId,updEventAdm);
     }
 
 }
