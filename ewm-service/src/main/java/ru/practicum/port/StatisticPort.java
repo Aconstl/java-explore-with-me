@@ -3,6 +3,7 @@ package ru.practicum.port;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.client.StatsClient;
+import ru.practicum.event.model.Event;
 import ru.practicum.model.StatDtoOut;
 
 
@@ -18,14 +19,33 @@ public class StatisticPort {
     private final StatsClient statsClient;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+/*
     public int getAmountOfViews(LocalDateTime eventPublishedOn, String[] uri) {
-        List<StatDtoOut> views =  statsClient.getHits(
-                        eventPublishedOn != null ? eventPublishedOn.format(formatter) : LocalDateTime.now().format(formatter), //?
-                        LocalDateTime.now().format(formatter),
-                        uri,
-                        true
-                        );
-        return views != null ? views.size() : 0;
+        //проверить данный вариант
+        if (eventPublishedOn != null) {
+            List<StatDtoOut> views = statsClient.getHits(
+
+                    // eventPublishedOn != null ? eventPublishedOn.format(formatter) : LocalDateTime.now().format(formatter), //?
+                    eventPublishedOn.format(formatter),
+                    LocalDateTime.now().format(formatter),
+                    uri,
+                    true
+            );
+            return views != null ? views.size() : 0;
+        } else {
+            return 0;
+        }
+    }
+    */
+    public int getAmountOfViews(Event event, String[] uri) {
+        //проверить данный вариант
+            List<StatDtoOut> views = statsClient.getHits(
+                    event.getPublishedOn() != null ? event.getPublishedOn().format(formatter) : event.getCreatedOn().format(formatter), //?
+                    LocalDateTime.now().format(formatter),
+                    uri,
+                    true
+            );
+            return views != null ? views.size() : 0;
     }
 /*
     public Map<Long, Long> getMapOfViews(LocalDateTime eventPublishedOn, String[] uri) {

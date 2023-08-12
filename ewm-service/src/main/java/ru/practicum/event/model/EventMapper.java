@@ -25,8 +25,8 @@ public class EventMapper {
                 .confirmedRequests((long) requestRepository.findAllByEventIdAndStatus(event.getId(), Status.CONFIRMED).size())
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                .views(stats != null ? stats.getAmountOfViews(event.getPublishedOn(),
-                        new String[]{String.format("/events/%d",event.getId())}) : 0 )
+                .views(stats != null ? stats.getAmountOfViews(event,
+                        new String[]{String.format("/events/%d",event.getId())}) : 0)
              //   .views(0) //ВРЕМЕННО
                 .build();
     }
@@ -56,8 +56,8 @@ public class EventMapper {
                 .title(event.getTitle())
                 .confirmedRequests((long) requestRepository.findAllByEventIdAndStatus(event.getId(), Status.CONFIRMED).size())
                 .publishedOn(event.getPublishedOn() != null ? event.getPublishedOn() : null)
-                .views(stats != null ? stats.getAmountOfViews(event.getPublishedOn(),
-                        new String[]{String.format("/events/%d",event.getId())}) : 0 )
+                .views(stats != null ? stats.getAmountOfViews(event,
+                        new String[]{String.format("/events/%d",event.getId())}) : 0)
            //     .views(0) //ВРЕМЕННО
                 .build();
     }
