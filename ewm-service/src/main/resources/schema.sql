@@ -73,3 +73,15 @@ CREATE TABLE IF NOT EXISTS public.compilation_events
     CONSTRAINT compilationEvents_FK FOREIGN KEY (compilation_id) REFERENCES PUBLIC.compilations(compilation_id),
     CONSTRAINT compilationEvents_FK_1 FOREIGN KEY (event_id) REFERENCES PUBLIC.events(event_id)
 );
+
+CREATE TABLE IF NOT EXISTS public.comments
+(
+    comments_id BIGINT NOT NULL,
+    commentator_id BIGINT NOT NULL,
+    event_id BIGINT NOT NULL,
+    text varchar(7000) NOT NULL,
+    created TIMESTAMP WITHOUT TIME ZONE,
+    CONSTRAINT pk_comments PRIMARY KEY (comments_id),
+    CONSTRAINT comments_FK FOREIGN KEY (commentator_id) REFERENCES PUBLIC.users(user_id),
+    CONSTRAINT comments_FK_1 FOREIGN KEY (event_id) REFERENCES PUBLIC.events(event_id)
+);
