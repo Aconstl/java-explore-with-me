@@ -11,6 +11,7 @@ import ru.practicum.comment.model.NewCommentDto;
 import ru.practicum.comment.service.CommentService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -32,6 +33,19 @@ public class PrivateCommentController {
         CommentFullDto commentFullDto = commentService.createComment(eventId, userId, newComment);
         log.info("Private: комментарий добавлен пользователем с id {} для события № {} успешно", userId, eventId);
         return commentFullDto;
+    }
+
+    @GetMapping
+    public List<CommentFullDto> getCommentsByUser(@PathVariable Long userId) {
+        log.info("Private: комментарии (получение всех комментариев пользователя с id {} )", userId);
+        return commentService.getCommentsByUser(userId);
+    }
+
+    @GetMapping("/{commentId}")
+    public CommentFullDto getComment(@PathVariable Long userId,
+                                           @PathVariable Long commentId) {
+        log.info("Private: комментарии (получение комментария под id {} пользователя с id {} )", commentId, userId);
+        return commentService.getComment(userId,commentId);
     }
 
     @PatchMapping("/{commentId}")
