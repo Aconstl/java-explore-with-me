@@ -36,9 +36,11 @@ public class PrivateCommentController {
     }
 
     @GetMapping
-    public List<CommentFullDto> getCommentsByUser(@PathVariable Long userId) {
+    public List<CommentFullDto> getCommentsByUser(@PathVariable Long userId,
+                                                  @RequestParam(defaultValue = "0") Long from,
+                                                  @RequestParam(defaultValue = "10") Long size) {
         log.info("Private: комментарии (получение всех комментариев пользователя с id {} )", userId);
-        return commentService.getCommentsByUser(userId);
+        return commentService.getCommentsByUser(userId, from, size);
     }
 
     @GetMapping("/{commentId}")
@@ -61,13 +63,14 @@ public class PrivateCommentController {
     }
 
     @DeleteMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteComment(
             @PathVariable Long userId,
             @PathVariable Long commentId
     ) {
-        log.info("Private: комментарии (обновление комментария № {} пользователем с id {})", commentId, userId);
+        log.info("Private: комментарии (удаление комментария № {} пользователем с id {})", commentId, userId);
         commentService.deleteComment(userId, commentId);
-        log.info("Private: комментарий  № {} обновлен успешно пользователем с id {}", commentId, userId);
+        log.info("Private: комментарий  № {} удален успешно пользователем с id {}", commentId, userId);
     }
 
 }

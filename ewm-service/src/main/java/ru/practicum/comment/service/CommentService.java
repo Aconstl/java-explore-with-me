@@ -49,14 +49,20 @@ public class CommentService {
         return CommentMapper.toDto(comment);
     }
 
-    public List<CommentFullDto> getCommentsByUser(Long userId) {
-        List<Comment> comments = commentRepository.findAllByCommentatorId(userId);
+    public List<CommentFullDto> getCommentsByUser(Long userId, Long from, Long size) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с указаным id не найден"));
+        Pageable pageable = Pagination.setPageable(from,size);
+        List<Comment> comments = commentRepository.findAllByCommentatorIdOrderByIdDesc(userId, pageable);
         return CommentMapper.toListDto(comments);
     }
 
     public CommentFullDto getComment(Long userId, Long commentId) {
-        Comment comment = commentRepository.findByCommentatorIdAndId(userId,commentId)
-                .orElseThrow(() -> new NotFoundException("комментарий от данного пользователя с указаным id не найден"));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("комментарий с указаным id не найден"));
+        if (!comment.getCommentator().getId().equals(userId)) {
+            throw new ConflictException("комментарий принадлежит не данному пользователю");
+        }
         return CommentMapper.toDto(comment);
     }
 
@@ -69,7 +75,7 @@ public class CommentService {
             //Недоступнос - 404
             throw new NotFoundException("Событие еще не опубликовано");
         }
-        List<Comment> comments = commentRepository.findAllByEventId(eventId,pageable);
+        List<Comment> comments = commentRepository.findAllByEventIdOrderByIdDesc(eventId,pageable);
         List<CommentShortDto> shortComments = CommentMapper.toListShortDto(comments);
         return new CommentListDto(eventId, event.getTitle(), shortComments);
     }
@@ -77,8 +83,11 @@ public class CommentService {
     public CommentFullDto updateComment(Long userId, Long commentId, NewCommentDto updateComment) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с указаным id не найден"));
-        Comment comment = commentRepository.findByCommentatorIdAndId(userId,commentId)
-                .orElseThrow(() -> new NotFoundException("комментарий от данного пользователя с указаным id не найден"));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("комментарий с указаным id не найден"));
+        if (!comment.getCommentator().getId().equals(userId)) {
+            throw new ConflictException("комментарий принадлежит не данному пользователю");
+        }
 
         comment.setText(updateComment.getText());
 
@@ -88,10 +97,12 @@ public class CommentService {
     }
 
     public void deleteComment(Long userId, Long commentId) {
-        commentRepository.findByCommentatorIdAndId(userId,commentId)
-                .ifPresentOrElse(commentRepository::delete, () -> {
-                throw new NotFoundException("комментарий от данного пользователя с указаным id не найден");
-                });
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("комментарий с указаным id не найден"));
+        if (!comment.getCommentator().getId().equals(userId)) {
+            throw new ConflictException("комментарий принадлежит не данному пользователю");
+        }
+        commentRepository.delete(comment);
     }
 
     public void deleteCommentByAdmin(Long commentId) {
