@@ -23,10 +23,10 @@ public class StatisticPort {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Value("${on-static}")
-    private Boolean onStatic;
+    private String onStatic;
 
     public int getAmountOfViews(Event event, String[] uri) {
-            if (!onStatic) {
+            if (!onStatic.equals("true")) {
                 return 0;
             } else {
                 List<StatDtoOut> views = statsClient.getHits(
@@ -40,7 +40,7 @@ public class StatisticPort {
     }
 
     public void newHit(String uri, String ip) {
-        if (onStatic) {
+        if (onStatic.equals("true")) {
             hitClient.newHit("ewm-main-service", uri, ip, LocalDateTime.now());
         }
     }
