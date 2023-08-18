@@ -9,6 +9,7 @@ import ru.practicum.event.model.dto.EventFullDto;
 import ru.practicum.event.model.dto.EventShortDto;
 import ru.practicum.event.model.SortEvent;
 import ru.practicum.event.service.EventService;
+import ru.practicum.port.StatisticPort;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class PublicEventController {
 
     private final EventService eventService;
     private final HitClient stats;
+    private final StatisticPort statisticPort;
 
     @GetMapping
     public List<EventShortDto> getEventWithFilter(
@@ -38,7 +40,8 @@ public class PublicEventController {
             HttpServletRequest request
             ) {
         log.info("Public: События (Получение событий с возможностью фильтрации)");
-        stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
+      // stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
+        statisticPort.newHit(request.getRequestURI(),request.getRemoteAddr());
         return eventService.getEventWithFilter(text,categories,paid,rangeStart,rangeEnd,onlyAvailable,sort,from,size);
     }
 
@@ -46,7 +49,8 @@ public class PublicEventController {
     public EventFullDto getEventById(@PathVariable Long id,
                                      HttpServletRequest request) {
         log.info("Public: События (Получение подробной информации об опубикованном событии по его идентификатору № {})", id);
-        stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
+     //   stats.newHit("ewm-main-service",request.getRequestURI(),request.getRemoteAddr(),LocalDateTime.now());
+        statisticPort.newHit(request.getRequestURI(),request.getRemoteAddr());
         EventFullDto eventFullDto = eventService.getEventById(id);
         log.info("Public: информация о событии № {} получена", id);
         return eventFullDto;

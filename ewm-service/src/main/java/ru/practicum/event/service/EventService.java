@@ -185,7 +185,6 @@ public class EventService {
                 //Не найден - 404
                 .orElseThrow(() -> new NotFoundException("События с указаным id не существует"));
 
-     //   if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
         if (event.getRequestModeration()) { // если предмоедарция заявок отключена - подтверждение заявок не требуется
             int countConfirmed = requestRepository.findAllByEventIdAndStatus(eventId,Status.CONFIRMED).size();
 
@@ -208,8 +207,6 @@ public class EventService {
                     r.setStatus(Status.REJECTED);
                 }
                 requests = requestRepository.saveAll(requests);
-            //    requestRepository.changeStatusRequest(r.getRequester().getId(),
-            //            r.getId(), r.getStatus().toString());
             }
         }
         List<EventRequest> confirmedRequests = requestRepository
@@ -237,8 +234,6 @@ public class EventService {
                 categoryIds,rangeStart,rangeEnd,pageable);
 
         return EventMapper.toListFulDto(events,requestRepository,stats);
-
-    //    throw new UnsupportedOperationException("Не реализован");
     }
 
     public EventFullDto updateAdminEvent(Long eventId, UpdateEventAdminRequest updEventAdm) {
