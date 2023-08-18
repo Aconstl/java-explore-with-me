@@ -4,7 +4,6 @@ package ru.practicum.comment.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.comment.model.CommentFullDto;
 import ru.practicum.comment.model.NewCommentDto;
@@ -17,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/users/{userId}/comments")
 @RequiredArgsConstructor
-@Validated
 public class PrivateCommentController {
 
     private final CommentService commentService;

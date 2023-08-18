@@ -49,6 +49,7 @@ public class CommentService {
         return CommentMapper.toDto(comment);
     }
 
+    @Transactional(readOnly = true)
     public List<CommentFullDto> getCommentsByUser(Long userId, Long from, Long size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с указаным id не найден"));
@@ -57,6 +58,7 @@ public class CommentService {
         return CommentMapper.toListDto(comments);
     }
 
+    @Transactional(readOnly = true)
     public CommentFullDto getComment(Long userId, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("комментарий с указаным id не найден"));
@@ -66,6 +68,7 @@ public class CommentService {
         return CommentMapper.toDto(comment);
     }
 
+    @Transactional(readOnly = true)
     public CommentListDto getCommentsEvent(Long eventId, Long from, Long size) {
         Pageable pageable = Pagination.setPageable(from,size);
         Event event = eventRepository.findById(eventId)
